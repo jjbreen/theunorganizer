@@ -3,6 +3,7 @@ import requests
 import datetime 
 
 from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
@@ -11,6 +12,10 @@ namespace = {'r25' : 'http://www.collegenet.com/r25'}
 @app.route("/")
 def hello():
     return "Hello World!"
+
+@app.route("/location")
+def getlocation():
+    return render_template("index.html")
 
 
 def parseWPILive(treePath):
@@ -62,8 +67,6 @@ def queryTimes(space_id):
 def isConflict(space_id):
 	res = queryTimes(space_id)
 	
-	 
-
 
 if __name__ == "__main__":
     app.run()
