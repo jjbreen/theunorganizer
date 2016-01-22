@@ -1,0 +1,1683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns:s="http://www.backbase.com/s" xmlns:c="http://www.collegenet.com/c"
+     xmlns:xhtml="http://www.w3.org/1999/xhtml"
+     xmlns:b="http://www.backbase.com/b"
+     xmlns:bx="http://www.backbase.com/bx"
+     class="resultContainer"
+     c:purpose="ResultsSchedule">
+   <div class="tblDaySchedule">
+      <div class="tblDayScheduleHead">
+         <table c:purpose="gridScheduleHead">
+            <thead>
+               <tr>
+                  <th class="tblDaySchedule_thScheduleEvent">
+                     <s:event b:on="construct">
+                        <s:super/>
+                        <s:setatt b:behavior=""/>
+                     </s:event>
+                     <div/>
+                  </th>
+                  <th class="tblDaySchedule_thFavorite">
+                     <s:event b:on="construct">
+                        <s:super/>
+                        <s:setatt b:behavior=""/>
+                     </s:event>
+                     <div/>
+                  </th>
+                  <th scope="col" class="tblDaySchedule_thName">
+                     <div c:purpose="space_name">
+                        <s:execute>
+                           <s:render>
+                              <s:textnode b:label="{id('Lang')/controls/application/text/columns/name}"/>
+                           </s:render>
+                        </s:execute>
+                        <div class="b-listview-th-sort-button"/>
+                     </div>
+                  </th>
+                  <th class="tblDaySchedule_thHours">
+                     <div class="tblDaySchedule_divHours">
+                        <div class="tblDaySchedule_thHourAM" style="width:5.555555555555555%;left:0%;"
+                             b:tooltiptext="6:00 AM">6</div>
+                        <div class="tblDaySchedule_thHourAM"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"
+                             b:tooltiptext="7:00 AM">7</div>
+                        <div class="tblDaySchedule_thHourAM"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"
+                             b:tooltiptext="8:00 AM">8</div>
+                        <div class="tblDaySchedule_thHourAM"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"
+                             b:tooltiptext="9:00 AM">9</div>
+                        <div class="tblDaySchedule_thHourAM"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"
+                             b:tooltiptext="10:00 AM">10</div>
+                        <div class="tblDaySchedule_thHourAM"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"
+                             b:tooltiptext="11:00 AM">11</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"
+                             b:tooltiptext="12:00 PM">12</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"
+                             b:tooltiptext="1:00 PM">1</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"
+                             b:tooltiptext="2:00 PM">2</div>
+                        <div class="tblDaySchedule_thHourPM" style="width:5.555555555555555%;left:50%;"
+                             b:tooltiptext="3:00 PM">3</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"
+                             b:tooltiptext="4:00 PM">4</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"
+                             b:tooltiptext="5:00 PM">5</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"
+                             b:tooltiptext="6:00 PM">6</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"
+                             b:tooltiptext="7:00 PM">7</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"
+                             b:tooltiptext="8:00 PM">8</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"
+                             b:tooltiptext="9:00 PM">9</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"
+                             b:tooltiptext="10:00 PM">10</div>
+                        <div class="tblDaySchedule_thHourPM"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"
+                             b:tooltiptext="11:00 PM">11</div>
+                     </div>
+                  </th>
+               </tr>
+            </thead>
+         </table>
+      </div>
+      <div class="tblDayScheduleBody" b:resize="s" style="height:200px;">
+         <s:event b:on="resize">
+            <s:script>_current.scrollTop = 0;</s:script>
+            <s:fxstyle b:time="500"/>
+            <s:variable b:name="lNewAvailabilityGridHeight" b:select="string(./style::height)"/>
+            <s:with b:target="ancestor::*[@c:control][1]">
+               <s:task b:action="assign" b:target="$tAvailabilityGridHeight" b:scope="tag"
+                       b:select="$lNewAvailabilityGridHeight"/>
+               <s:task b:action="trigger" b:event="SavePrefs"/>
+            </s:with>
+         </s:event>
+         <table c:purpose="gridScheduleBody">
+            <tbody>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="41" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="41"
+                             c:obj_name="SL 011"
+                             c:obj_formal_name="Salisbury Labs 011 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 011</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="41"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 011 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="41"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 011 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="41"
+                      c:obj_type="space"
+                      c:obj_name="SL 011"
+                      c:obj_formal_name="Salisbury Labs 011 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 011 (Salisbury Labs 011 - Classroom)">SL 011</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="42" class="b-listview-tr defColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="42"
+                             c:obj_name="SL 104"
+                             c:obj_formal_name="Salisbury Labs 104 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 104</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="42"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 104 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="42"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 104 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="42"
+                      c:obj_type="space"
+                      c:obj_name="SL 104"
+                      c:obj_formal_name="Salisbury Labs 104 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 104 (Salisbury Labs 104 - Classroom)">SL 104</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="43" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="43"
+                             c:obj_name="SL 105"
+                             c:obj_formal_name="Salisbury Labs 105 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 105</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="43"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 105 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="43"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 105 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="43"
+                      c:obj_type="space"
+                      c:obj_name="SL 105"
+                      c:obj_formal_name="Salisbury Labs 105 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 105 (Salisbury Labs 105 - Classroom)">SL 105</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="44" class="b-listview-tr defColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="44"
+                             c:obj_name="SL 115"
+                             c:obj_formal_name="Salisbury Labs 115 - Kinnicutt Hall"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 115</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="44"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 115 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="44"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 115 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="44"
+                      c:obj_type="space"
+                      c:obj_name="SL 115"
+                      c:obj_formal_name="Salisbury Labs 115 - Kinnicutt Hall">
+                     <div class="icon-space" b:tooltiptext="SL 115 (Salisbury Labs 115 - Kinnicutt Hall)">SL 115</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="45" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="45"
+                             c:obj_name="SL 123"
+                             c:obj_formal_name="Salisbury Labs 123 - Computer Lab"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 123</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="45"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 123 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="45"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 123 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="45"
+                      c:obj_type="space"
+                      c:obj_name="SL 123"
+                      c:obj_formal_name="Salisbury Labs 123 - Computer Lab">
+                     <div class="icon-space" b:tooltiptext="SL 123 (Salisbury Labs 123 - Computer Lab)">SL 123</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="479" class="b-listview-tr defColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NoReserve"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('Lang')/controls/application/tooltips/no_perms_location}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="479"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 219 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="479"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 219 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="479"
+                      c:obj_type="space"
+                      c:obj_name="SL 219"
+                      c:obj_formal_name="Salisbury Labs 219 -- BME Lab">
+                     <div class="icon-space" b:tooltiptext="SL 219 (Salisbury Labs 219 -- BME Lab)">SL 219</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="331" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NoReserve"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('Lang')/controls/application/tooltips/no_perms_location}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="331"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 226 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="331"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 226 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="331"
+                      c:obj_type="space"
+                      c:obj_name="SL 226"
+                      c:obj_formal_name="Salisbury Labs 226 - HUA Seminar Room">
+                     <div class="icon-space"
+                          b:tooltiptext="SL 226 (Salisbury Labs 226 - HUA Seminar Room)">SL 226</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="46" class="b-listview-tr defColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="46"
+                             c:obj_name="SL 305"
+                             c:obj_formal_name="Salisbury Labs 305 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 305</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="46"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 305 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="46"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 305 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="46"
+                      c:obj_type="space"
+                      c:obj_name="SL 305"
+                      c:obj_formal_name="Salisbury Labs 305 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 305 (Salisbury Labs 305 - Classroom)">SL 305</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="206" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="206"
+                             c:obj_name="SL 402"
+                             c:obj_formal_name="Salisbury Labs 402 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 402</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="206"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 402 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="206"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 402 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="206"
+                      c:obj_type="space"
+                      c:obj_name="SL 402"
+                      c:obj_formal_name="Salisbury Labs 402 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 402 (Salisbury Labs 402 - Classroom)">SL 402</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="47" class="b-listview-tr defColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="47"
+                             c:obj_name="SL 406"
+                             c:obj_formal_name="Salisbury Labs 406 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 406</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="47"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 406 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="47"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 406 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="47"
+                      c:obj_type="space"
+                      c:obj_name="SL 406"
+                      c:obj_formal_name="Salisbury Labs 406 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 406 (Salisbury Labs 406 - Classroom)">SL 406</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="49" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="49"
+                             c:obj_name="SL 407"
+                             c:obj_formal_name="Salisbury Labs 407 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 407</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="49"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 407 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="49"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 407 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="49"
+                      c:obj_type="space"
+                      c:obj_name="SL 407"
+                      c:obj_formal_name="Salisbury Labs 407 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 407 (Salisbury Labs 407 - Classroom)">SL 407</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="257" class="b-listview-tr defColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="257"
+                             c:obj_name="SL 411"
+                             c:obj_formal_name="Salisbury Labs 411 - Classroom"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 411</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="257"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 411 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="257"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL 411 </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="257"
+                      c:obj_type="space"
+                      c:obj_name="SL 411"
+                      c:obj_formal_name="Salisbury Labs 411 - Classroom">
+                     <div class="icon-space" b:tooltiptext="SL 411 (Salisbury Labs 411 - Classroom)">SL 411</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+               <tr valign="top" c:purpose="EventRow" c:obj_id="134" class="b-listview-tr altColor">
+                  <td class="tblDaySchedule_tdScheduleEvent">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif" class="actionIcon_Reserve"
+                             b:behavior="ScheduleNewEvent"
+                             c:obj_type="space"
+                             c:obj_id="134"
+                             c:obj_name="SL LOUNGE"
+                             c:obj_formal_name="Salisbury Labs - Lounge Area"
+                             c:obj_action="reserve"
+                             c:rsrv_start_dt="1453438801000"
+                             c:start_dt="1453438801000"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/schedule_event_in}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL LOUNGE</b>.</div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td class="tblDaySchedule_tdFavorite" c:purpose="FavToggle">
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_IsFavorite"
+                             c:purpose="IsFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="134"
+                             style="display:none"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/remove}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL LOUNGE </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/from_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                     <span>
+                        <img src="http://25live-c.collegenet.com/v25.2/gfx/_.gif"
+                             class="actionIcon_NotFavorite"
+                             c:purpose="NotFavorite"
+                             b:behavior="ToggleFavorite"
+                             c:obj_type="space"
+                             c:obj_id="134"/>
+                        <b:tooltip>
+                           <div>
+                              <s:execute>
+                                 <s:render b:mode="asfirstchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/add}"/>
+                                 </s:render>
+                              </s:execute>
+                              <b> SL LOUNGE </b>
+                              <s:execute>
+                                 <s:render b:mode="aslastchild">
+                                    <s:textnode b:label="{id('LayoutMgr')/$tLang/tooltips/to_starred_locations}"/>
+                                 </s:render>
+                              </s:execute>
+                           </div>
+                        </b:tooltip>
+                     </span>
+                  </td>
+                  <td scope="row" class="tblDaySchedule_tdName" b:behavior="S25Object" c:obj_id="134"
+                      c:obj_type="space"
+                      c:obj_name="SL LOUNGE"
+                      c:obj_formal_name="Salisbury Labs - Lounge Area">
+                     <div class="icon-space" b:tooltiptext="SL LOUNGE (Salisbury Labs - Lounge Area)">SL LOUNGE</div>
+                  </td>
+                  <td c:purpose="dirScheduleEvents" class="tblDaySchedule_tdEvents">
+                     <div class="tblDaySchedule_ReserveContainer" c:purpose="ReserveContainer">
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:0%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:5.555555555555555%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:11.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:16.666666666666664%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:22.22222222222222%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:27.77777777777778%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:33.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:38.888888888888886%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:44.44444444444444%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:50%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:55.55555555555556%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:61.11111111111111%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:66.66666666666666%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:72.22222222222221%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:77.77777777777777%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:83.33333333333333%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:88.88888888888889%;"/>
+                        <div class="tblDaySchedule_divReserve" onclick="javascript:void(0)"
+                             style="width:5.555555555555555%;left:94.44444444444444%;"/>
+                        <div class="tblDaySchedule_EventContainer" c:purpose="EventContainer"/>
+                     </div>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+   <div class="tblDayScheduleResizeNote">
+      <s:execute>
+         <s:render>
+            <s:textnode b:label="{id('LayoutMgr')/$tLang/text/grid_resize_note}"/>
+         </s:render>
+      </s:execute>
+   </div>
+   <div class="pubdate">
+      <span xmlns:s25="http://www.collegenet.com/s25"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:xl="http://www.w3.org/1999/xlink"
+            xmlns:r25="http://www.collegenet.com/r25">
+         <span>
+            <s:execute>
+               <s:render>
+                  <s:textnode b:label="{string(id('Lang')/controls/application/text/pubdate)}"/>
+               </s:render>
+            </s:execute>
+         </span> 
+         <span>Jan 22 2016 9:10pm</span>
+      </span>
+   </div>
+</div>
