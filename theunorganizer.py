@@ -1,4 +1,5 @@
 from xml.etree.ElementTree import ElementTree
+import xml
 import requests
 import datetime 
 
@@ -15,17 +16,17 @@ def hello():
 
 @app.route("/location")
 def getlocation():
-    return render_template("index.html")
+    return parseWPILive()
 
 
-def parseWPILive(treePath):
-	
+def parseWPILive():
+	tpath = "https://25live.collegenet.com/25live/data/wpi/run/spaces.xml"
 
-	tree = ElementTree()
-	tree.parse(treePath)
-	root = tree.getroot()
+	r = requests.get(tpath)
 
-	spaceList = root.findall("r25:space", namespace)
+	tree = xml.etree.ElementTree.fromstring(r.content)
+
+	spaceList = tree.findall("r25:space", namespace)
 	
 
 	attrList = ["space_id", "space_name", "formal_name", "partition_name", "max_capacity"]
@@ -55,7 +56,7 @@ def queryTimes(space_id):
 	end_dt = "%s235959" % (dt)
 	office_hrs = "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23"
 
-	r = request.get(tpath.format(space_id, start_dt, end_dt, office_hrs))
+	r = requests.get(tpath.format(space_id, start_dt, end_dt, office_hrs))
 	
 	tree = xml.etree.ElementTree.fromstring(r.content)
 
@@ -67,6 +68,30 @@ def queryTimes(space_id):
 def isConflict(space_id):
 	res = queryTimes(space_id)
 	
+	tnow = datetime.datetime.now()
+
+	tranges = [{"start" : datetime.datetime.strptime(''.join(y["reservation_start_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z'), "end" : datetime.datetime.strptime(''.join(y["reservation_end_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z')} for y in res]
+
+	for x in tranges:
+		if x["start"] > tnow:
+			return False
+
+		if x["start"] < tnow and x["end"] > tnow:
+			return True
+
+	return False
+
+ 
+def listFreeRooms():
+	qDict = parseWPILive()
+	freeRooms = []	
+	for x in qDict:
+		if isConflict(x["space_id"]) == False:
+			freeRooms.append(x)
+
+	return freeRooms
+
 
 if __name__ == "__main__":
     app.run()
+    print (listFreeRooms())
