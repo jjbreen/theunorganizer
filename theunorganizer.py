@@ -4,9 +4,12 @@ import requests
 import datetime 
 import time 
 import roomdata
+import json 
 
 from flask import Flask
+from flask import request 
 from flask import render_template
+from flask import Response 
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -36,10 +39,11 @@ def send_js(path):
 
 @app.route('/api/closest', methods=['GET'])
 def map_api():
+
 	lon = float(request.args.get('longitude'))
 	lat = float(request.args.get('latitude'))
 
-	return findNearbyRooms([lon, lat])
+	return Response(json.dumps(findNearbyRooms([lon, lat])), mimetype='application/json')
 
 def parseWPILive():
 	tpath = "https://25live.collegenet.com/25live/data/wpi/run/spaces.xml"
@@ -132,7 +136,12 @@ def refreshSpaceInformation():
 def grabSpaceInformationFromDB(searchDict = {}):
 	posts = dbspaces.posts
 	results = posts.find(searchDict)
-	return list(results)
+
+	results = list(results)
+	for x in results:
+		del x['_id']
+
+	return results
 
 def refreshIDTimesInformation():
 	flushIDTimesInformation()
@@ -149,7 +158,13 @@ def refreshIDTimesInformation():
 def grabIDTimesInformationFromDB(searchDict = {}):
 	posts = dbidtimes.posts
 	results = posts.find(searchDict)
-	return list(results)
+	
+	results = list(results)
+	for x in results:
+		del x['_id']
+
+
+	return results 
 
 def refreshRoomGPSInformation():
 	flushRoomGPSInformation()
@@ -160,7 +175,12 @@ def refreshRoomGPSInformation():
 def grabRoomGPSInformationFromDB(searchDict = {}):
 	posts = dbroomtogps.posts
 	results = posts.find(searchDict)
-	return list(results)
+
+	results = list(results)
+	for x in results:
+		del x['_id']
+
+	return results 
 
 def updateDB():
 	refreshSpaceInformation();
@@ -177,7 +197,7 @@ def findNearbyRooms(GPS_coordinates):
 
 	distances = [{'room' : [x['name'],y['name']],
 				'distance' : distanceFormula(lon, y['point'][0], lat, y['point'][1]),
-				'gps' : y['points']} for x in rCoord for y in x['rooms']]
+				'gps' : y['point']} for x in rCoord for y in x['rooms']]
 	
 	sorted(distances, key = lambda x: x['distance'])
 
@@ -187,9 +207,14 @@ def findNearbyRooms(GPS_coordinates):
 	for x in distances:
 		for y in rooms:
 			if y['space_id'] == transformRoomtoID(x['room']):
-				avail.append([y, x['distance'], x['gps']])
+				avail.append({'details': y,
+							'distance': x['distance'],
+							'coordinates': x['gps'],
+							'status': 'free'})
 
-	return sorted(avail, key=lambda x: x[1] )
+	avail = sorted(avail, key=lambda x: x['distance'])
+	avail[0]['status'] = 'best'
+	return avail
 
 
 def transformRoomtoID(nameTuple):
@@ -226,7 +251,8 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-	app.run()
+	print ()
+	app.run(debug = True )
 
 
 
