@@ -1,7 +1,7 @@
 .status {
 position: absolute;
-left: 0px;
-right: 0px;
+left: 4em;
+right: 4em;
 height: calc(3em + 10px);
 line-height: 2.8em;
 font-size: 16pt;
@@ -24,6 +24,7 @@ height: 3em; margin: 5px 0 5px 0;
   }
   .logorotate {
 height: 2em;
+}
 }
 
 head, body, .site-wrapper, .site-wrapper-inner, .cover-container {
