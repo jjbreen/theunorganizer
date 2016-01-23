@@ -113,7 +113,7 @@ body {
   padding: 0 20px;
 }
 .cover .btn-lg {
-  padding: 10px 20px;
+  padding: 20px 30px;
   font-weight: bold;
 }
 
@@ -181,4 +181,45 @@ body {
   -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
    transform: rotate(180deg);
+}
+
+.maydaybutton {
+  -webkit-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  -moz-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  -o-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  -ms-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+}
+
+.maydaybutton:hover {
+  background-color: #CD2626;
+  color: #FFF;
+  font-size: 30pt;
+  padding: 40px 60px;
+  animation: pulse 1s infinite;
+  animation-delay: 0.5s;
+  box-shadow: 3px 3px 3px 2px black;
+}
+
+.maydaybutton:active {
+  animation: none;
+  color: #FFB00F !important;
+  background-color: #EE2C2C !important;
+  border-color: #FFF !important;
+  font-size: 40pt;
+  padding: 32px 31px;
+  -webkit-transition: color 0.1s ease;
+  -moz-transition: color 0.1s ease;
+  -o-transition: color 0.1s ease;
+  -ms-transition: color 0.1s ease;
+  transition: color 0.1s ease;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #CD2626;
+  }
+  100% {
+    background-color: #EE2C2C;
+  }
 }
