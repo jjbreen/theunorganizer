@@ -6,6 +6,25 @@ height: calc(3em + 10px);
 line-height: 2.8em;
 font-size: 16pt;
 }
+.logorotate {
+height: 3em; margin: 5px 0 5px 0;
+}
+
+@media (max-width: 767px) {
+	.masthead-brand {
+    float: left;
+  }
+  .masthead-nav {
+    display: none;
+  }
+  .status {
+  left: 3em;
+  text-align: left;
+  line-height: 1.8em;
+  }
+  .logorotate {
+height: 2em;
+}
 
 head, body, .site-wrapper, .site-wrapper-inner, .cover-container {
 	height: 100%;
