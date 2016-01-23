@@ -24,6 +24,10 @@ def hello():
 
 @app.route("/location")
 def getlocation():
+    return render_template("index.html")
+
+@app.route("/wpilive")
+def getwpilib():
     return parseWPILive()
 
 @app.route('/public/<path:path>')
@@ -167,12 +171,38 @@ def findNearbyRooms(GPS_coordinates):
 	return avail
 
 
+def automatchRooms():
+	import re
+
+	alldata = grabSpaceInformationFromDB()
+	
+	tmpdata = []
+
+	for rm in alldata:
+		m = re.match('([A-Z]{2}) [AB]?[0-9]{1,3}[A-F]?$', rm["space_name"])
+		if m:
+			print( rm["space_name"] + " - " + rm["space_id"])
+			for floors in roomdata.allData:
+				if re.match(m.group(1), floors["name"]):
+					for room in floors["rooms"]:
+						n = re.match('([ABab]?)([0-9]{1,3})([A-Fa-f]?)', room["name"])
+						if not n:
+							continue
+						proper = "{} {}{:0>3}{}".format(m.group(1), n.group(1).upper(), int(n.group(2)), n.group(3).upper())
+						if rm["space_name"] == proper:
+							print("matched " + proper)
+							tmpdata.append({"gps": [floors["name"], room["name"]], "live25": [rm["space_name"], rm["space_id"]]})
+		else:
+			print( "\t\t\t\t\t\t\t\t" + rm["space_name"] + " - " + rm["space_id"])
+			pass
+
+	print( tmpdata)
+
 
 if __name__ == "__main__":
-    print (refreshSpaceInformation())
-    #print (roomdata.allData)
-
-    app.run()
+	#print (refreshSpaceInformation())
+	
+	app.run()
 
 
 

@@ -155,7 +155,6 @@ allData = [{"name":"AK0.png",
 		{"point":[4063,3171],"name":"219"},
 		{"point":[3729,367],"name":"201"},
 		{"point":[3479,580],"name":"200b"},
-		{"point":[3276,603],"name":""},
 		{"point":[3276,603],"name":"200a"},
 		{"point":[2786,483],"name":"202"},
 		{"point":[2076,487],"name":"203"},
@@ -352,7 +351,7 @@ allData = [{"name":"AK0.png",
 		{"point":[4020,3172],"name":"112"},
 		{"point":[3467,1918],"name":"115"},
 		{"point":[2193,1468],"name":"lounge"},
-		{"point":[1333,1528],"name":"101"},
+		{"point":[1333,1528],"name":"123"},
 		{"point":[2243,835],"name":"108"},
 		{"point":[1180,342],"name":"124"},
 		{"point":[2460,193],"name":"129"}]},
@@ -360,7 +359,7 @@ allData = [{"name":"AK0.png",
 	"rooms":[
 		{"point":[1227,353],"name":"224"},
 		{"point":[1843,343],"name":"223"},
-		{"point":[1317,1147],"name":"225"},
+		{"point":[1317,1147],"name":"226"},
 		{"point":[2187,1577],"name":"219"},
 		{"point":[2197,2297],"name":"245"},
 		{"point":[1883,2934],"name":"204"},
@@ -383,10 +382,10 @@ allData = [{"name":"AK0.png",
 		{"point":[2303,490],"name":"318"}]},
 {"name":"SL4.png",
 	"rooms":[
-		{"point":[1837,300],"name":"406a"},
-		{"point":[2747,277],"name":"406b"},
+		{"point":[1837,300],"name":"407"},
+		{"point":[2747,277],"name":"406"},
 		{"point":[1227,2276],"name":"412"},
-		{"point":[1023,2743],"name":"413"},
+		{"point":[1023,2743],"name":"411"},
 		{"point":[1243,3236],"name":"414"},
 		{"point":[1863,3280],"name":"401"},
 		{"point":[2447,3153],"name":"402"}]},
@@ -395,3 +394,23 @@ allData = [{"name":"AK0.png",
 		{"point":[530,260],"name":"501"}]},
 
 ];
+
+alldata = [{'space_name': 'AF TURF', 'formal_name': 'Alumni Field - Turf', 'space_id': '152', '_id': ('56a3dd30b6ca4033733edc27'), 'partition_name': 'Athletics (Outdoor)', 'max_capacity': '1500'}, 
+
+{'space_name': 'AH B06', 'formal_name': 'Alden Hall B06 - Janet Earle Room', 'space_id': '115', '_id': ('56a3dd30b6ca4033733edc28'), 'partition_name': 'Alden Memorial', 'max_capacity': '52'}]
+
+roomdata = [{'live25': ['AK 116', '5'], 'gps': ['AK1.png', '116']}, {'live25': ['AK 126A', '305'], 'gps': ['AK1.png', '126a']}, {'live25': ['AK 219', '7'], 'gps': ['AK2.png', '219']}, {'live25': ['AK 232', '8'], 'gps': ['AK2.png', '232']}, {'live25': ['AK 233', '9'], 'gps': ['AK2.png', '233']}, {'live25': ['FL 222', '69'], 'gps': ['FL2.png', '222']}, {'live25': ['FL 311', '10'], 'gps': ['FL3.png', '311']}, {'live25': ['FL 320', '12'], 'gps': ['FL3.png', '320']}, {'live25': ['FL A021', '395'], 'gps': ['FLB.png', 'a021']}, {'live25': ['SH 003', '314'], 'gps': ['SH0.png', '3']}, {'live25': ['SH 106', '34'], 'gps': ['SH1.png', '106']}, {'live25': ['SH 202', '35'], 'gps': ['SH2.png', '202']}, {'live25': ['SH 203', '36'], 'gps': ['SH2.png', '203']}, {'live25': ['SH 304', '39'], 'gps': ['SH3.png', '304']}, {'live25': ['SH 306', '37'], 'gps': ['SH3.png', '306']}, {'live25': ['SH 308', '38'], 'gps': ['SH3.png', '308']}, {'live25': ['SH 309', '40'], 'gps': ['SH3.png', '309']}, {'live25': ['SL 011', '41'], 'gps': ['SL0.png', '11']}, {'live25': ['SL 104', '42'], 'gps': ['SL1.png', '104']}, {'live25': ['SL 105', '43'], 'gps': ['SL1.png', '105']}, {'live25': ['SL 115', '44'], 'gps': ['SL1.png', '115']}, {'live25': ['SL 123', '45'], 'gps': ['SL1.png', '123']}, {'live25': ['SL 219', '479'], 'gps': ['SL2.png', '219']}, {'live25': ['SL 226', '331'], 'gps': ['SL2.png', '226']}, {'live25': ['SL 305', '46'], 'gps': ['SL3.png', '305']}, {'live25': ['SL 402', '206'], 'gps': ['SL4.png', '402']}, {'live25': ['SL 406', '47'], 'gps': ['SL4.png', '406']}, {'live25': ['SL 407', '49'], 'gps': ['SL4.png', '407']}, {'live25': ['SL 411', '257'], 'gps': ['SL4.png', '411']}
+# manual
+, 
+{'gps': ['SL1.png', 'lounge'], 'live25': ['SL LOUNGE', '134']},
+{'gps': ['FL2.png', '246-Beckett'], 'live25': ['BECKETT CONF RM', '203']},
+{'gps': ['FL2.png', 'fllower'], 'live25': ['FL PH-LWR', '228']},
+{'gps': ['FL2.png', 'flupper'], 'live25': ['FL PH-UPR', '229']},
+# CC
+
+]
+
+
+
+
+
