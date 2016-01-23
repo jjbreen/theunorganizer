@@ -18,14 +18,25 @@ window.onload = function() {
             imagerySet: 'aerial',
             maxZoom: 19
           })
-        }),   new ol.layer.Image({
+        }),  /* new ol.layer.Image({
             source: new ol.source.ImageStatic({
               url: '/static/floors/AK1_r-150.0v4601x5959.png',
 //              projection: projection,
               imageExtent: [-7993580.0, 5202250.0, -7993462.0, 5202360.0],
             }),
+              opacity: 0.7
+          }),*/
+        /*   new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+              url: '/static/floors/SL1_r-81.60v69x4632.png',
+//              projection: projection,
+//-7993569.73750382, 5202271.599635647  [ -7993500.167864797, 5202150.673868241 ]
+              imageExtent: [-7993569.0, 5202150.0, -7993495.0, 5202268.0],
+            }),
               opacity: 0.3
-          })],
+          }),*/
+          
+          ],
         // Improve user experience by loading tiles while dragging/zooming. Will make
         // zooming choppy on mobile or slow devices.
         loadTilesWhileInteracting: true,
