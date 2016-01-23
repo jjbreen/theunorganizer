@@ -43,7 +43,7 @@ point = [point[0] * Math.cos(rotate) + point[1] * Math.sin(rotate), -point[0] * 
     	point = [point[0]+zero[0], -(point[1]-zero[1])]; // to screen
 //    	return point;
     	var rrpoint = [(point[0] / imsize[0]), point[1] / imsize[1]];
-    	return [bounds[2] + (bounds[0]-bounds[2])*rrpoint[0], bounds[1] + (bounds[3]-bounds[1])*rrpoint[1]];
+    	return [bounds[0] + (bounds[2]-bounds[0])*rrpoint[0], bounds[3] + (bounds[1]-bounds[3])*rrpoint[1]];
     }
     //["AK0.png", "AK1.png", "AK2.png", "AK3.png", "CC1.png", "CC2.png", "CC3.png", "FL0.png", "FL1.png", "FL2.png", "FL3.png", "FLB.png", "GL0.png", "GL1.png", "GL2.png", "GL3.png", "GLB.png", "HA0.png", "HA1.png", "HA2.png", "HA3.png", "HH0.png", "HH1.png", "HH2.png", "HH3.png", "HHA.png", "SH0.png", "SH1.png", "SH2.png", "SH3.png", "SL0.png", "SL1.png", "SL2.png", "SL3.png", "SL4.png", "SL5.png"];
     var rooms = ["AK0.png", "AK1.png", "AK2.png", "AK3.png", "CC1.png", "CC2.png", "CC3.png", "FL0.png", "FL1.png", "FL2.png", "FL3.png", "FLB.png", "GL0.png", "GL1.png", "GL2.png", "GL3.png", "GLB.png",
