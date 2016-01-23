@@ -118,6 +118,8 @@ def queryTimes(space_id):
 def isConflict(space_id):
 	res = grabIDTimesInformationFromDB({'space_id' : space_id})[0]
 	
+	print(res)
+
 	if len(res['times']) <= 0:
 		return False
 
@@ -127,11 +129,7 @@ def isConflict(space_id):
 	tranges = [{"start" : datetime.datetime.strptime(''.join(y["reservation_start_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None), "end" : datetime.datetime.strptime(''.join(y["reservation_end_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None)} for y in res['times']]
 
 	for x in tranges:
-		if x["start"] > tnow:
-			return False
-
 		if x["start"] < tnow and x["end"] > tnow:
-			print(space_id)
 			return True
 
 	return False
@@ -310,6 +308,8 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
+	print(isConflict('64'))
+
 	app.run(debug = True )
 
 
