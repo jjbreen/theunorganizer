@@ -9,6 +9,47 @@ def reproject(point, rotate, zero, bounds, imsize):
 	rrpoint = [(point[0] / imsize[0]), point[1] / imsize[1]];
 	return [bounds[0] + (bounds[2]-bounds[0])*rrpoint[0], bounds[3] + (bounds[1]-bounds[3])*rrpoint[1]];
 
+
+def fixCoordinates():
+	for x in bounds:
+		for y in piclist:
+			if x in y:
+				pass
+
+
+
+
+piclist = ['AK0_r-151.55v4948x5429.png',
+	'AK1_r-150.0v4601x5959.png',
+	'AK2_r-151.55v4804x5924.png',
+	'CC1_r-18.5v266x5326.png',
+	'CC2_r-18.5v0x5370.png',
+	'CC3_r-18.5v253x5330.png',
+	'FL2_r62.48v3839x0.png',
+	'FL3_r62.48v4083x471.png',
+	'FLB_r62.48v4195x736.png',
+	'SH0_r98.16v5134x619.png',
+	'SH1_r98.16v5114x681.png',
+	'SH2_r98.16v5161x645.png',
+	'SH3_r98.16v5143x649.png',
+	'SL0_r-81.60v255x4556.png',
+	'SL1_r-81.60v69x4632.png',
+	'SL2_r-81.60v149x5238.png',
+	'SL3_r-81.60v0x6218.png',
+	'SL4_r-81.60v80x5816.png']
+
+bounds = {'AK' : {'bounds' : [-7993580.0, 5202250.0, -7993462.0, 5202360.0],
+				'imsize' : [6483, 5960]},
+			'SL' : {'bounds' : [-7993569.0, 5202150.0, -7993495.0, 5202268.0],
+				'imsize' : [4347, 6730]},
+			'CC' : {'bounds' : [-7993725.0, 5202196.0 , -7993640.0, 5202301.0 ],
+				'imsize' : [4906, 5974]},
+			'SH' : {'bounds' : [ -7993618.0, 5202069.0 , -7993565.0, 5202125.0 ],
+				'imsize' : [5162, 6399]},
+			'FL' : {'bounds' : [ -7993508.0, 5202206.0 , -7993390.0, 5202336.0 ],
+				'imsize' : [6743, 7567]},
+			}
+
 allData = [{"name":"AK0.png",
 	"rooms":[
 		{"point":[370,653],"name":"27"},
