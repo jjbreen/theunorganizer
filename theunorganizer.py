@@ -45,6 +45,17 @@ def map_api():
 
 	return Response(json.dumps(findNearbyRooms([lon, lat])), mimetype='application/json')
 
+@app.route('/api/closed', methods=['GET'])
+def closed_api():
+	lon = float(request.args.get('longitude'))
+	lat = float(request.args.get('latitude'))
+
+	return Response(json.dumps(findTakenRooms([lon, lat])), mimetype='application/json')
+
+@app.route('/api/update')
+def update_db():
+	updateDB()
+
 def parseWPILive():
 	tpath = "https://25live.collegenet.com/25live/data/wpi/run/spaces.xml"
 
@@ -108,7 +119,16 @@ def isConflict(space_id):
 
 	return False
 
- 
+
+def listTakenRooms():
+	qDict = grabSpaceInformationFromDB()
+	takenRooms = []	
+	for x in qDict:
+		if isConflict(x["space_id"]) == True:
+			takenRooms.append(x)
+
+	return takenRooms
+
 def listFreeRooms():
 	qDict = grabSpaceInformationFromDB()
 	freeRooms = []	
@@ -216,6 +236,28 @@ def findNearbyRooms(GPS_coordinates):
 	avail[0]['status'] = 'best'
 	return avail
 
+def findTakenRooms(GPS_coordinates):
+	rCoord = grabRoomGPSInformationFromDB()
+	lon = GPS_coordinates[0]
+	lat = GPS_coordinates[1]
+
+	distances = [{'room' : [x['name'],y['name']],
+				'distance' : distanceFormula(lon, y['point'][0], lat, y['point'][1]),
+				'gps' : y['point']} for x in rCoord for y in x['rooms']]
+	
+	rooms = listTakenRooms()
+	
+	avail = []
+	for x in distances:
+		for y in rooms:
+			if y['space_id'] == transformRoomtoID(x['room']):
+				avail.append({'details': y,
+							'distance': x['distance'],
+							'coordinates': x['gps'],
+							'status': 'taken'})
+
+	avail = sorted(avail, key=lambda x: x['distance'])
+	return avail
 
 def transformRoomtoID(nameTuple):
 	for room in roomdata.roomdata:
@@ -251,7 +293,6 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-	print ()
 	app.run(debug = True )
 
 
