@@ -1,0 +1,25 @@
+.status {
+position: absolute;
+left: 0px;
+right: 0px;
+height: calc(3em + 10px);
+line-height: 2.8em;
+font-size: 16pt;
+}
+
+head, body, .site-wrapper, .site-wrapper-inner, .cover-container {
+	height: 100%;
+}
+
+.cover-container {
+	display: flex;
+	flex-direction: column;
+}
+.masthead {
+	flex: 0 0 auto;
+}
+
+#mapDiv {
+	flex: 1 1 auto;
+	max-height: calc(100% - 3em - 10px);
+}
