@@ -3,6 +3,7 @@ import xml
 import requests
 import datetime 
 import time 
+import roomdata
 
 from flask import Flask
 from flask import render_template
@@ -103,7 +104,7 @@ def listFreeRooms():
 	return freeRooms
 
 def flushSpaceInformation(searchDict = {}):
-	dbspaces.delete_many(searchDict)
+	dbspaces.posts.delete_many(searchDict)
 
 def flushIDTimesInformation(searchDict = {}):
 	dbidtimes.delete_many(searchDict)
@@ -112,6 +113,7 @@ def flushRoomGPSInformation(searchDict = {}):
 	dbroomtogps.delete_many(searchDict)
 
 def refreshSpaceInformation():
+	flushSpaceInformation()
 	posts = dbspaces.posts
 	results = posts.insert_many(parseWPILive())
 	return results.inserted_ids
@@ -167,7 +169,13 @@ def findNearbyRooms(GPS_coordinates):
 
 
 if __name__ == "__main__":
-    #print (refreshIDTimesInformation())
+    print (refreshSpaceInformation())
+    #print (roomdata.allData)
 
     app.run()
+
+
+
+
+
     
