@@ -34,6 +34,13 @@ def getwpilib():
 def send_js(path):
     return send_from_directory('public', path)
 
+@app.route('/api/closest', methods=['GET'])
+def map_api():
+	lon = float(request.args.get('longitude'))
+	lat = float(request.args.get('latitude'))
+
+	return findNearbyRooms([lon, lat])
+
 def parseWPILive():
 	tpath = "https://25live.collegenet.com/25live/data/wpi/run/spaces.xml"
 
@@ -155,8 +162,12 @@ def grabRoomGPSInformationFromDB(searchDict = {}):
 	results = posts.find(searchDict)
 	return list(results)
 
-def distanceFormula(x1, x2, y1, y2):
+def updateDB():
+	refreshSpaceInformation();
+	refreshIDTimesInformation();
+	refreshRoomGPSInformation();
 
+def distanceFormula(x1, x2, y1, y2):
 	return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** (1/2)
 
 def findNearbyRooms(GPS_coordinates):
@@ -164,7 +175,9 @@ def findNearbyRooms(GPS_coordinates):
 	lon = GPS_coordinates[0]
 	lat = GPS_coordinates[1]
 
-	distances = [{'room' : [x['name'],y['name']], 'distance' : distanceFormula(lon, y['point'][0], lat, y['point'][1])} for x in rCoord for y in x['rooms']]
+	distances = [{'room' : [x['name'],y['name']],
+				'distance' : distanceFormula(lon, y['point'][0], lat, y['point'][1]),
+				'gps' : y['points']} for x in rCoord for y in x['rooms']]
 	
 	sorted(distances, key = lambda x: x['distance'])
 
@@ -174,9 +187,9 @@ def findNearbyRooms(GPS_coordinates):
 	for x in distances:
 		for y in rooms:
 			if y['space_id'] == transformRoomtoID(x['room']):
-				avail.append((y, x['distance']))
+				avail.append([y, x['distance'], x['gps']])
 
-	return avail
+	return sorted(avail, key=lambda x: x[1] )
 
 
 def transformRoomtoID(nameTuple):
@@ -213,8 +226,7 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-	print (sorted(findNearbyRooms([ -7993727.421701732, 5202259.514564865 ]), key=lambda x: x[1])[0])
-	
+
 	app.run()
 
 
