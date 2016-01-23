@@ -45,10 +45,31 @@ window.onload = function() {
         anchor: [0.5, 46],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        opacity: 0.75,
-        src: 'http://openlayers.org/en/v3.9.0/examples/data/icon.png'
+        opacity: 0.7,
+        src: '/static/icons/unorganizr_locmarker_gray.png'
       }))
     });
+
+
+      var positionFeature = new ol.Feature();
+      positionFeature.setStyle(new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({
+            color: '#39b54a'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 2
+          })
+        })
+      }));
+//      positionFeature.setGeometry(coordinates ?            new ol.geom.Point(coordinates) : null);
+
+  
+        vectorSource.addFeature(positionFeature);
+
+
  var vectorLayer = new ol.layer.Vector({
       source: vectorSource,
       style: iconStyle
@@ -94,13 +115,13 @@ window.onload = function() {
             }),
               opacity: 0.3
           }),*/ 
-          /**/new ol.layer.Image({
+          /*new ol.layer.Image({
             source: new ol.source.ImageStatic({
               url: '/static/floors/FL2_r62.48v3839x0.png',
               imageExtent: [ -7993508.0, 5202206.0 , -7993390.0, 5202336.0 ],
             }),
               opacity: 0.3
-          }),/**/
+          }),*/
           vectorLayer
           ],
         // Improve user experience by loading tiles while dragging/zooming. Will make
@@ -110,8 +131,6 @@ window.onload = function() {
         view: new ol.View({
           center: ol.proj.fromLonLat([-71.807402, 42.274775]),
           zoom: 19,
-	  //displayProjection: "EPSG:900913",
-//	  projection: "EPSG:4326"
         }),
       });
       
@@ -119,11 +138,12 @@ window.onload = function() {
   var geoSuccess = function(position) {
     startPos = position;
     console.info(position);
-    map.getView().setCenter(ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude]));
-    document.getElementById('startLat').innerHTML = startPos.coords.latitude;
-    document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+    var lattl = ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude])
+    positionFeature.setGeometry(lattl ? new ol.geom.Point(lattl) : null)
+    map.getView().setCenter(lattl); // TODO: only on first acquire
+    document.querySelector(".status").textContent = "Finding nearest room...";
   };
-  navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)});
+  navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)}); // TODO: ensure this follows someone
 };
     </script>
   </head>
@@ -136,8 +156,8 @@ window.onload = function() {
 
           <div class="masthead clearfix">
             <div class="inner">
-              <img src="static/icons/unorganizr_logo_light.png" class="masthead-brand logorotate">
               <div class="status">Searching for Your Location...</div>
+              <img src="static/icons/unorganizr_logo_light.png" class="masthead-brand logorotate">
               <nav>
                 <img src="static/icons/unorganizr_name_light.png" class="nav masthead-nav" style="height: 3em; margin-top: 5px">
               </nav>
@@ -153,13 +173,6 @@ window.onload = function() {
 
     </div>
     
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
   </body>
 </html>
