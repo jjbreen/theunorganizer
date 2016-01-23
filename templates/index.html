@@ -6,9 +6,45 @@
     <link rel="stylesheet" href="http://openlayers.org/en/v3.13.0/css/ol.css" type="text/css">
     <script src="http://openlayers.org/en/v3.13.0/build/ol.js"></script>
     <script>
+    
+    function reproject(point, rotate, zero, bounds, imsize)
+    {
+    	rotate = rotate*Math.PI/180.0;
+    	point = [point[0], -point[1]]; // to math
+point = [point[0] * Math.cos(rotate) + point[1] * Math.sin(rotate), -point[0] * Math.sin(rotate) + point[1] * Math.cos(rotate)];
+
+    	point = [point[0]+zero[0], -(point[1]-zero[1])]; // to screen
+//    	return point;
+    	var rrpoint = [(point[0] / imsize[0]), point[1] / imsize[1]];
+    	return [bounds[0] + (bounds[2]-bounds[0])*rrpoint[0], bounds[3] + (bounds[1]-bounds[3])*rrpoint[1]];
+    }
+    
 window.onload = function() {
   var startPos;
   
+        var vectorSource = new ol.source.Vector({
+      //create empty vector
+    });
+     var iconFeature = new ol.Feature({
+          geometry: new  ol.geom.Point(reproject([3467,1918], -81.60, [69, 4632], [-7993569.0, 5202150.0, -7993495.0, 5202268.0], [4347, 6730])),
+        name: '115 TEST ',
+        });
+        vectorSource.addFeature(iconFeature);
+        
+    var iconStyle = new ol.style.Style({
+      image: new ol.style.Icon( ({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        opacity: 0.75,
+        src: 'http://openlayers.org/en/v3.9.0/examples/data/icon.png'
+      }))
+    });
+ var vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+      style: iconStyle
+    });
+    
   map = new ol.Map({
         layers: [new ol.layer.Tile({
           visible: true,
@@ -33,9 +69,23 @@ window.onload = function() {
 //-7993569.73750382, 5202271.599635647  [ -7993500.167864797, 5202150.673868241 ]
               imageExtent: [-7993569.0, 5202150.0, -7993495.0, 5202268.0],
             }),
+              opacity: 0.7
+          }),*/
+           /*new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+              url: '/static/floors/CC3_r-18.5v253x5330.png',
+              imageExtent: [-7993725.0, 5202196.0 , -7993640.0, 5202301.0 ],
+            }),
               opacity: 0.3
           }),*/
-          
+            new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+              url: '/static/floors/SH2_r98.16v5161x645.png',
+              imageExtent: [ -7993618.0, 5202069.0 , -7993565.0, 5202125.0 ],
+            }),
+              opacity: 0.3
+          }),
+          vectorLayer
           ],
         // Improve user experience by loading tiles while dragging/zooming. Will make
         // zooming choppy on mobile or slow devices.
@@ -48,7 +98,7 @@ window.onload = function() {
 //	  projection: "EPSG:4326"
         }),
       });
-   
+      
 /*
   var mapOptions = {
 credentials: "AgLSPXtDo72XlOb6hkEc5D-4ICLMCgJ0AM2nLSyjpEcYf3fg4-GeJkQbhGP8H6db",
