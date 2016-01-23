@@ -107,10 +107,10 @@ def flushSpaceInformation(searchDict = {}):
 	dbspaces.posts.delete_many(searchDict)
 
 def flushIDTimesInformation(searchDict = {}):
-	dbidtimes.delete_many(searchDict)
+	dbidtimes.posts.delete_many(searchDict)
 
 def flushRoomGPSInformation(searchDict = {}):
-	dbroomtogps.delete_many(searchDict)
+	dbroomtogps.posts.delete_many(searchDict)
 
 def refreshSpaceInformation():
 	flushSpaceInformation()
@@ -139,6 +139,11 @@ def grabIDTimesInformationFromDB(searchDict = {}):
 	results = posts.find(searchDict)
 	return list(results)
 
+def refreshRoomGPSInformation():
+	posts = dbroomtogps.posts
+	results = posts.insert_many(roomdata.fixCoordinates())
+	return results.inserted_ids 
+
 def grabRoomGPSInformationFromDB(searchDict = {}):
 	posts = dbroomtogps.posts
 	results = posts.find(searchDict)
@@ -152,7 +157,7 @@ def findNearbyRooms(GPS_coordinates):
 	lat = GPS_coordinates[0]
 	lon = GPS_coordinates[1]
 
-	distances = [{'room' : x['room'], 'distance' : distanceFormula(lat, rCoord['latitude'], lon, rCoord['longitude'])} for x in rCoord]
+	distances = [{'room' : (x['name'],y['name']), 'distance' : distanceFormula(lat, y['point'][0], lon, y['point'][1])} for y in x['rooms'] for x in rCoord]
 	
 	sorted(distances, key = lambda x: x['distance'])
 
@@ -169,8 +174,8 @@ def findNearbyRooms(GPS_coordinates):
 
 
 if __name__ == "__main__":
-    print (refreshSpaceInformation())
-    #print (roomdata.allData)
+    #print (refreshSpaceInformation())
+    print (roomdata.fixCoordinates())
 
     app.run()
 

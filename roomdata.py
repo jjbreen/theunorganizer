@@ -1,7 +1,8 @@
 import math
+import re
 
 def reproject(point, rotate, zero, bounds, imsize):
-	rotate = rotate*math.PI/180.0;
+	rotate = rotate*math.pi /180.0;
 	point = [point[0], -point[1]]; 
 	point = [point[0] * math.cos(rotate) + point[1] * math.sin(rotate), -point[0] * math.sin(rotate) + point[1] * math.cos(rotate)];
 
@@ -11,11 +12,25 @@ def reproject(point, rotate, zero, bounds, imsize):
 
 
 def fixCoordinates():
+	fixedData = []
 	for x in bounds:
 		for y in piclist:
 			if x in y:
-				pass
+				m = re.search("(.*?)_r(-?\\d+.\\d+)v(\\d+)x(\\d+).png", y)
+				if m:
+					room = m.group(1)
+					rotate = float(m.group(2))
+					zero = [float(m.group(3)), float(m.group(4))]
+				else:
+					continue
 
+				for z in allData:
+					if room in z['name']:
+						fixedData.append({'name' : z['name'],
+							'rooms' : [{'point' : reproject(w['point'], rotate, zero, bounds[x]['bounds'], bounds[x]['imsize']),
+										'old_point' : w['point'], 
+										'name' : w['name']} for w in z['rooms']]})
+	return fixedData
 
 
 
@@ -395,3 +410,18 @@ allData = [{"name":"AK0.png",
 		{"point":[530,260],"name":"501"}]},
 
 ];
+
+
+
+
+coor_map = [{'gps': ['SL1.png', 'lounge'], 'live25': ['SL LOUNGE', '134']},
+			{'gps': ['CC3.png', '341'], 'live25': ['CC ODEUM A', '64']},
+			{'gps': ['CC3.png', '342'], 'live25': ['CC ODEUM B', '65']},
+			{'gps': ['CC3.png', '343'], 'live25': ['CC ODEUM C', '67']},
+			{'gps': ['CC3.png', '331'], 'live25': ['CC 3RD FLOOR LOBBY - MID-CENTURY', '61']},
+			{'gps': ['CC3.png', '301'], 'live25': ['CC 3RD FLOOR LOBBY - HAGGLUND', '63']},
+			{'gps': ['CC2.png', '207'], 'live25': ['CC MORGAN', '60']},
+			{'gps': ['CC1.png', '120'], 'live25': ["CC CHAIRMAN'S", '58']},
+			{'gps': ['CC1.png', '126'], 'live25': ['CC TAYLOR', '59']},
+			{'gps': ['CC3.png', '304'], 'live25': ['CC PETERSON', '62']}]
+
