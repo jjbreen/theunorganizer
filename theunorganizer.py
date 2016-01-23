@@ -20,7 +20,7 @@ dbroomtogps = client.db_roomgps
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return render_template("landingpage.html")
 
 @app.route("/location")
 def getlocation():
