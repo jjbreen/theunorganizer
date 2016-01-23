@@ -161,3 +161,24 @@ body {
     width: 700px;
   }
 }
+
+/*
+ * Custom
+ */
+
+.logorotate {
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+   transition-duration: 0.2s;
+  -webkit-transition-property: -webkit-transform;
+  -moz-transition-property: -moz-transform;
+  -o-transition-property: -o-transform;
+   transition-property: transform;
+}
+
+.logorotate:hover {
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+   transform: rotate(180deg);
+}
