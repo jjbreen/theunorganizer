@@ -3,6 +3,7 @@ import xml
 import requests
 import datetime 
 import time 
+import roomdata
 
 from flask import Flask
 from flask import render_template
@@ -168,6 +169,12 @@ def findNearbyRooms(GPS_coordinates):
 
 if __name__ == "__main__":
     #print (refreshIDTimesInformation())
+    print (roomdata.allData)
 
     app.run()
+
+
+
+
+
     
