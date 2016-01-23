@@ -20,10 +20,14 @@ dbroomtogps = client.db_roomgps
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return render_template("landingpage.html")
 
 @app.route("/location")
 def getlocation():
+    return render_template("index.html")
+
+@app.route("/wpilive")
+def getwpilib():
     return parseWPILive()
 
 @app.route('/public/<path:path>')
@@ -124,6 +128,7 @@ def grabSpaceInformationFromDB(searchDict = {}):
 	return list(results)
 
 def refreshIDTimesInformation():
+	flushIDTimesInformation()
 	posts = dbidtimes.posts
 
 	rooms = grabSpaceInformationFromDB()
@@ -140,6 +145,7 @@ def grabIDTimesInformationFromDB(searchDict = {}):
 	return list(results)
 
 def refreshRoomGPSInformation():
+	flushRoomGPSInformation()
 	posts = dbroomtogps.posts
 	results = posts.insert_many(roomdata.fixCoordinates())
 	return results.inserted_ids 
@@ -150,14 +156,15 @@ def grabRoomGPSInformationFromDB(searchDict = {}):
 	return list(results)
 
 def distanceFormula(x1, x2, y1, y2):
-	return (x2** 2 - x1 ** 2) ** (1/2) + (y2 ** 2 - y1 ** 2) ** (1/2)
+
+	return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** (1/2)
 
 def findNearbyRooms(GPS_coordinates):
 	rCoord = grabRoomGPSInformationFromDB()
-	lat = GPS_coordinates[0]
-	lon = GPS_coordinates[1]
+	lon = GPS_coordinates[0]
+	lat = GPS_coordinates[1]
 
-	distances = [{'room' : (x['name'],y['name']), 'distance' : distanceFormula(lat, y['point'][0], lon, y['point'][1])} for y in x['rooms'] for x in rCoord]
+	distances = [{'room' : [x['name'],y['name']], 'distance' : distanceFormula(lon, y['point'][0], lat, y['point'][1])} for x in rCoord for y in x['rooms']]
 	
 	sorted(distances, key = lambda x: x['distance'])
 
@@ -166,18 +173,49 @@ def findNearbyRooms(GPS_coordinates):
 	avail = []
 	for x in distances:
 		for y in rooms:
-			if y['space_name'] == x['room']:
-				avail.append(y)
+			if y['space_id'] == transformRoomtoID(x['room']):
+				avail.append((y, x['distance']))
 
 	return avail
 
 
+def transformRoomtoID(nameTuple):
+	for room in roomdata.roomdata:
+		if room['gps'] == nameTuple:
+			return room['live25'][1]
+
+
+def automatchRooms():
+	import re
+	alldata = grabSpaceInformationFromDB()
+	
+	tmpdata = []
+
+	for rm in alldata:
+		m = re.match('([A-Z]{2}) [AB]?[0-9]{1,3}[A-F]?$', rm["space_name"])
+		if m:
+			print( rm["space_name"] + " - " + rm["space_id"])
+			for floors in roomdata.allData:
+				if re.match(m.group(1), floors["name"]):
+					for room in floors["rooms"]:
+						n = re.match('([ABab]?)([0-9]{1,3})([A-Fa-f]?)', room["name"])
+						if not n:
+							continue
+						proper = "{} {}{:0>3}{}".format(m.group(1), n.group(1).upper(), int(n.group(2)), n.group(3).upper())
+						if rm["space_name"] == proper:
+							print("matched " + proper)
+							tmpdata.append({"gps": [floors["name"], room["name"]], "live25": [rm["space_name"], rm["space_id"]]})
+		else:
+			print( "\t\t\t\t\t\t\t\t" + rm["space_name"] + " - " + rm["space_id"])
+			pass
+
+	print( tmpdata)
+
 
 if __name__ == "__main__":
-    #print (refreshSpaceInformation())
-    print (roomdata.fixCoordinates())
-
-    app.run()
+	print (sorted(findNearbyRooms([ -7993727.421701732, 5202259.514564865 ]), key=lambda x: x[1])[0])
+	
+	app.run()
 
 
 
