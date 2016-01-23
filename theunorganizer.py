@@ -142,17 +142,27 @@ def grabRoomGPSInformationFromDB(searchDict = {}):
 	results = posts.find(searchDict)
 	return list(results)
 
+def distanceFormula(x1, x2, y1, y2):
+	return (x2** 2 - x1 ** 2) ** (1/2) + (y2 ** 2 - y1 ** 2) ** (1/2)
+
 def findNearbyRooms(GPS_coordinates):
 	rCoord = grabRoomGPSInformationFromDB()
 	lat = GPS_coordinates[0]
 	lon = GPS_coordinates[1]
 
-	distances = [{'room' : x['room'], 'distance' : ((lat ** 2 + lon ** 2) ** (1/2))} for x in rCoord]
+	distances = [{'room' : x['room'], 'distance' : distanceFormula(lat, rCoord['latitude'], lon, rCoord['longitude'])} for x in rCoord]
 	
 	sorted(distances, key = lambda x: x['distance'])
 
 	rooms = listFreeRooms()
 	
+	avail = []
+	for x in distances:
+		for y in rooms:
+			if y['space_name'] == x['room']:
+				avail.append(y)
+
+	return avail
 
 
 
