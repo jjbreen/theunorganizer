@@ -65,6 +65,13 @@ bounds = {'AK' : {'bounds' : [-7993580.0, 5202250.0, -7993462.0, 5202360.0],
 				'imsize' : [6743, 7567]},
 			}
 
+conData = [{"name":"WB2.png",
+	"rooms":[
+		{"point":[-7993550.217696304, 5202115.403852749], 'name':'229'}]},
+{"name":"WB3.png",
+	"rooms":[
+		{"point":[-7993545.141799896, 5202131.527288402], 'name':'323'}]}]
+
 allData = [{"name":"AK0.png",
 	"rooms":[
 		{"point":[370,653],"name":"27"},
@@ -428,6 +435,8 @@ roomdata = [{'live25': ['AK 116', '5'], 'gps': ['AK1.png', '116']}, {'live25': [
 {'gps': ['CC1.png', '120'], 'live25': ["CC CHAIRMAN'S", '58']},
 {'gps': ['CC1.png', '126'], 'live25': ['CC TAYLOR', '59']},
 {'gps': ['CC3.png', '304'], 'live25': ['CC PETERSON', '62']},
+{'gps': ['WB2.png', '229'], 'live25': ['WB 229', '75']},
+{'gps': ['WB3.png', '323'], 'live25': ['WB 323', '76']}
 ]
 
 
