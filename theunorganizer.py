@@ -112,20 +112,26 @@ def queryTimes(space_id):
 
 	attrList = ["reservation_start_dt", "reservation_end_dt", "event/r25:event_name", "event/r25:event_title", "event/r25:event_description"]
 
-	return {"%s" % space_id : [{y:x.findall("r25:%s" % y, namespace)[-1].text for y in attrList if len(x.findall("r25:%s" % y, namespace)) > 0 } for x in reservations]}
+	return {"space_id" : space_id,
+			"times" : [{y:x.findall("r25:%s" % y, namespace)[-1].text for y in attrList if len(x.findall("r25:%s" % y, namespace)) > 0 } for x in reservations]}
 
 def isConflict(space_id):
-	res = grabIDTimesInformationFromDB({'space_id' : space_id})
+	res = grabIDTimesInformationFromDB({'space_id' : space_id})[0]
 	
+	if len(res['times']) <= 0:
+		return False
+
 	tnow = datetime.datetime.now()
 
-	tranges = [{"start" : datetime.datetime.strptime(''.join(y["reservation_start_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z'), "end" : datetime.datetime.strptime(''.join(y["reservation_end_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z')} for y in res]
+
+	tranges = [{"start" : datetime.datetime.strptime(''.join(y["reservation_start_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None), "end" : datetime.datetime.strptime(''.join(y["reservation_end_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None)} for y in res['times']]
 
 	for x in tranges:
 		if x["start"] > tnow:
 			return False
 
 		if x["start"] < tnow and x["end"] > tnow:
+			print(space_id)
 			return True
 
 	return False
