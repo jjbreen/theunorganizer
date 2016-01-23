@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>RoomLocs</title>
+    <style>
+html,body {
+  margin: 0;
+  padding: 0;
+}
+    </style>
+    <script>
+var roomlocs = new String("\"AK0\" : [\n\t");
+var data = {name:"AK0", rooms:
+function clickHandler(e) {
+    var point = [e.pageX, e.pageY];
+    roomlocs.concat(JSON.stringify(point), ",\n\t");
+}
+    </script>
+  </head>
+  <body>
+    <img onclick="clickHandler(event)" src="Atwater Kent 0.png" id="floor" frameborder="0" allowfullscreen></iframe>
+  </body>
+</html>
