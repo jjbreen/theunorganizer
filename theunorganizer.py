@@ -17,6 +17,9 @@ def hello():
 def getlocation():
     return render_template("index.html")
 
+@app.route('/public/<path:path>')
+def send_js(path):
+    return send_from_directory('public', path)
 
 def parseWPILive(treePath):
 	

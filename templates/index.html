@@ -3,19 +3,75 @@
   <head>
     <meta charset="utf-8">
     <title>Location</title>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.13.0/css/ol.css" type="text/css">
+    <script src="http://openlayers.org/en/v3.13.0/build/ol.js"></script>
     <script>
 window.onload = function() {
   var startPos;
+  
+  map = new ol.Map({
+        layers: [new ol.layer.Tile({
+          visible: true,
+          preload: Infinity,
+          source: new ol.source.BingMaps({
+            key: 'AgLSPXtDo72XlOb6hkEc5D-4ICLMCgJ0AM2nLSyjpEcYf3fg4-GeJkQbhGP8H6db',
+            imagerySet: 'aerial',
+            maxZoom: 19
+          })
+        }),   new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+              url: '/static/floors/AK1_r-150.0v4601x5959.png',
+//              projection: projection,
+              imageExtent: [-7993580.0, 5202250.0, -7993462.0, 5202360.0],
+            }),
+              opacity: 0.3
+          })],
+        // Improve user experience by loading tiles while dragging/zooming. Will make
+        // zooming choppy on mobile or slow devices.
+        loadTilesWhileInteracting: true,
+        target: 'mapDiv',
+        view: new ol.View({
+          center: ol.proj.fromLonLat([-71.807402, 42.274775]),
+          zoom: 19,
+	  //displayProjection: "EPSG:900913",
+//	  projection: "EPSG:4326"
+        }),
+      });
+   
+/*
+  var mapOptions = {
+credentials: "AgLSPXtDo72XlOb6hkEc5D-4ICLMCgJ0AM2nLSyjpEcYf3fg4-GeJkQbhGP8H6db",
+  center: new Microsoft.Maps.Location(42.274775, -71.807402),
+                            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                            zoom: 17
+}
+
+var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), mapOptions);
+
+   Microsoft.Maps.registerModule("ImageOverlayModule", "static/ImageOverlayModule.js");
+            Microsoft.Maps.loadModule("ImageOverlayModule", { callback: function () {
+var imageRect = Microsoft.Maps.LocationRect.fromCorners(new Microsoft.Maps.Location(42.275317, -71.806563), new Microsoft.Maps.Location( 42.275583, -71.807193));
+var imgPin = ImageOverlay(map, 'static/floors/AK1.png', imageRect);
+                imgPin.SetOpacity(0.5);
+map.entities.push(imgPin);
+}});
+*/
   var geoSuccess = function(position) {
     startPos = position;
+    console.info(position);
+//    map.setView({center: new Microsoft.Maps.Location(startPos.coords.latitude, startPos.coords.longitude)});
+    map.getView().setCenter(ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude]));
     document.getElementById('startLat').innerHTML = startPos.coords.latitude;
     document.getElementById('startLon').innerHTML = startPos.coords.longitude;
   };
-  navigator.geolocation.getCurrentPosition(geoSuccess);
+  navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)});
 };
     </script>
   </head>
   <body>
-    <iframe id="video" frameborder="0" allowfullscreen></iframe>
+    <div id="startLat"></div>
+    <div id="startLon"></div>
+    hey
+    <div id='mapDiv' style="position:absolute; width:400px; height:400px;"></div>
   </body>
 </html>
