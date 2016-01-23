@@ -308,7 +308,6 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-	print(isConflict('64'))
 
 	app.run(debug = True )
 
