@@ -2,13 +2,19 @@ from xml.etree.ElementTree import ElementTree
 import xml
 import requests
 import datetime 
+import time 
 
 from flask import Flask
 from flask import render_template
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
 namespace = {'r25' : 'http://www.collegenet.com/r25'}
+
+client = MongoClient("localhost", 27017)
+dbspaces = client.db_spaces
+dbidtimes = client.db_idtimes
 
 @app.route("/")
 def hello():
@@ -30,7 +36,7 @@ def parseWPILive():
 	
 
 	attrList = ["space_id", "space_name", "formal_name", "partition_name", "max_capacity"]
-	queryDict = [{y : x.findall("r25:%s" % (y), namespace)[0].text for y in attrList} for x in spaceList]
+	queryDict = [{y : x.findall("r25:%s" % (y), namespace)[-1].text for y in attrList if len(x.findall("r25:%s" % (y), namespace)) > 0} for x in spaceList]
 
 	"""
 	#Do this later
@@ -60,10 +66,11 @@ def queryTimes(space_id):
 	
 	tree = xml.etree.ElementTree.fromstring(r.content)
 
-	reservations = tree.findall("r25:space_reversation", namespace)
+	reservations = tree.findall("r25:space_reservation", namespace)
 
-	attrList = ["reservation_start_dt", "reservation_end_dt", "event_name", "event_title"]
-	return [{y: x.findall("r25:%s" % y, namespace)[0].text for y in attrList} for x in reservations]
+	attrList = ["reservation_start_dt", "reservation_end_dt", "event/r25:event_name", "event/r25:event_title", "event/r25:event_description"]
+
+	return {"%s" % space_id : [{y:x.findall("r25:%s" % y, namespace)[-1].text for y in attrList if len(x.findall("r25:%s" % y, namespace)) > 0 } for x in reservations]}
 
 def isConflict(space_id):
 	res = queryTimes(space_id)
@@ -83,7 +90,7 @@ def isConflict(space_id):
 
  
 def listFreeRooms():
-	qDict = parseWPILive()
+	qDict = [{"space_id" : "42"}, {"space_id" : "150"}]#parseWPILive()
 	freeRooms = []	
 	for x in qDict:
 		if isConflict(x["space_id"]) == False:
@@ -91,7 +98,41 @@ def listFreeRooms():
 
 	return freeRooms
 
+def flushSpaceInformation(searchDict = {}):
+	dbspaces.delete_many(searchDict)
+
+def flushIDTimesInformation(searchDict = {}):
+	dbidtimes.delete_many(searchDict)
+
+def refreshSpaceInformation():
+	posts = dbspaces.posts
+	results = posts.insert_many(parseWPILive())
+	return results.inserted_ids
+
+def grabSpaceInformationFromDB(searchDict = {}):
+	posts = dbspaces.posts
+	results = posts.find(searchDict)
+	return list(results)
+
+def refreshIDTimesInformation():
+	posts = dbidtimes.posts
+
+	rooms = grabSpaceInformationFromDB()
+
+	for room in rooms:
+		idtime = queryTimes(room["space_id"])
+		print("Information: %s" % idtime)
+		result = posts.insert_one(idtime)
+		print("Updated Space ID: %s as %s" % (room["space_id"], result.inserted_id))
+	
+def grabIDTimesInformationFromDB(searchDict = {}):
+	posts = dbidtimes.posts
+	results = posts.find(searchDict)
+	return list(results)
+
 
 if __name__ == "__main__":
+    #print (refreshIDTimesInformation())
+
     app.run()
-    print (listFreeRooms())
+    
