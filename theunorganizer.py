@@ -24,6 +24,10 @@ def hello():
 
 @app.route("/location")
 def getlocation():
+    return render_template("index.html")
+
+@app.route("/wpilive")
+def getwpilib():
     return parseWPILive()
 
 @app.route('/public/<path:path>')
