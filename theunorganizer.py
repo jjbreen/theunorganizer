@@ -15,6 +15,7 @@ namespace = {'r25' : 'http://www.collegenet.com/r25'}
 client = MongoClient("localhost", 27017)
 dbspaces = client.db_spaces
 dbidtimes = client.db_idtimes
+dbroomtogps = client.db_roomgps
 
 @app.route("/")
 def hello():
@@ -76,7 +77,7 @@ def queryTimes(space_id):
 	return {"%s" % space_id : [{y:x.findall("r25:%s" % y, namespace)[-1].text for y in attrList if len(x.findall("r25:%s" % y, namespace)) > 0 } for x in reservations]}
 
 def isConflict(space_id):
-	res = queryTimes(space_id)
+	res = grabIDTimesInformationFromDB({'space_id' : space_id})
 	
 	tnow = datetime.datetime.now()
 
@@ -93,7 +94,7 @@ def isConflict(space_id):
 
  
 def listFreeRooms():
-	qDict = [{"space_id" : "42"}, {"space_id" : "150"}]#parseWPILive()
+	qDict = grabSpaceInformationFromDB()
 	freeRooms = []	
 	for x in qDict:
 		if isConflict(x["space_id"]) == False:
@@ -106,6 +107,9 @@ def flushSpaceInformation(searchDict = {}):
 
 def flushIDTimesInformation(searchDict = {}):
 	dbidtimes.delete_many(searchDict)
+
+def flushRoomGPSInformation(searchDict = {}):
+	dbroomtogps.delete_many(searchDict)
 
 def refreshSpaceInformation():
 	posts = dbspaces.posts
@@ -132,6 +136,34 @@ def grabIDTimesInformationFromDB(searchDict = {}):
 	posts = dbidtimes.posts
 	results = posts.find(searchDict)
 	return list(results)
+
+def grabRoomGPSInformationFromDB(searchDict = {}):
+	posts = dbroomtogps.posts
+	results = posts.find(searchDict)
+	return list(results)
+
+def distanceFormula(x1, x2, y1, y2):
+	return (x2** 2 - x1 ** 2) ** (1/2) + (y2 ** 2 - y1 ** 2) ** (1/2)
+
+def findNearbyRooms(GPS_coordinates):
+	rCoord = grabRoomGPSInformationFromDB()
+	lat = GPS_coordinates[0]
+	lon = GPS_coordinates[1]
+
+	distances = [{'room' : x['room'], 'distance' : distanceFormula(lat, rCoord['latitude'], lon, rCoord['longitude'])} for x in rCoord]
+	
+	sorted(distances, key = lambda x: x['distance'])
+
+	rooms = listFreeRooms()
+	
+	avail = []
+	for x in distances:
+		for y in rooms:
+			if y['space_name'] == x['room']:
+				avail.append(y)
+
+	return avail
+
 
 
 if __name__ == "__main__":
