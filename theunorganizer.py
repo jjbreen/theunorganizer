@@ -213,7 +213,7 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-	print (sorted(findNearbyRooms([ -7993727.421701732, 5202259.514564865 ]), key=lambda x: x[1])[0])
+	#print(sorted(findNearbyRooms([ -7993727.421701732, 5202259.514564865 ]), key=lambda x: x[1])[0])
 	
 	app.run()
 
