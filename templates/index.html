@@ -47,7 +47,7 @@ window.onload = function() {
 
         });
         var png = x.status == "best" ? "green" : (x.status == "free" ? "blue" : (x.status == "bad" ? "red" : "gray"));
-        var color = x.status == "best" ? "#29953a" : (x.status == "free" ? "#1260ae" : (x.status == "bad" ? "red" : "gray"));
+        var color = x.status == "best" ? "#29953a" : (x.status == "free" ? "#1260ae" : (x.status == "bad" ? "red" : "#96989c"));
         pf.setStyle(new ol.style.Style({
 		  image: new ol.style.Icon( {
 		    anchor: [0.5, 21.0/24.0],
@@ -60,7 +60,7 @@ window.onload = function() {
           text: x.details.space_name,
           font: "bold 12px Arial",
           fill: new ol.style.Fill({color: color}),
-          stroke: x.status == "taken" ? undefined : new ol.style.Stroke({color: "rgba(255,255,255,0.9)", width: 4}),
+          stroke: x.status == "taken" || x.status == "bad" ? undefined : new ol.style.Stroke({color: "rgba(255,255,255,0.9)", width: 4}),
           offsetX: 0,
           offsetY: -38,
         })
@@ -175,7 +175,11 @@ oReq.addEventListener("load", function(e){
 var dat = JSON.parse(oReq.responseText);
 var ss = document.querySelector(".status");
     ss.textContent = dat[0].details.space_name;
-    ss.innerHTML += " (<a href=\"#\" id=\"taken\">taken?</a>)";
+    if (ss.textContent.length > 11)
+    {
+    	ss.textContent = ss.textContent.substring(0,10) + "…";
+    }
+    ss.innerHTML += " (<a href=\"#\" id=\"taken\">no?</a>)";
     document.getElementById("taken").addEventListener("click", function(e){
     	e.stopPropagation();
     	e.preventDefault();
@@ -200,7 +204,13 @@ var ss = document.querySelector(".status");
     	raw2 = newr.get("raw");
     	if (raw2.status == "free")
     	{
-    		ss.firstChild.textContent = raw2.details.space_name + " (";
+    		ss.firstChild.textContent = raw2.details.space_name;
+    		
+			if (ss.firstChild.textContent.length > 11)
+			{
+				ss.firstChild.textContent = ss.firstChild.textContent.substring(0,10) + "…";
+			}
+    		ss.firstChild.textContent += " (";
 	    	raw2.status = "best";
 	    	
 	    	map.getView().setCenter(raw2.coordinates);
