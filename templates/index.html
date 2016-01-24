@@ -232,6 +232,11 @@ oReq.send();
     document.querySelector(".status").textContent = "Finding nearest room...";
   };
   navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)}); // TODO: ensure this follows someone
+  imgpreload = [new Image(), new Image(), new Image(), new Image()];
+  imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
+	imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
+	imgpreload[2].src = "/static/icons/unorganizr_locmarker_blue.png";
+	imgpreload[3].src = "/static/icons/unorganizr_locmarker_gray.png";
 };
     </script>
   </head>
