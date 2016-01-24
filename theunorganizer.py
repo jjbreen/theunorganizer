@@ -130,7 +130,7 @@ def isConflict(space_id):
 	tranges = [{"start" : datetime.datetime.strptime(''.join(y["reservation_start_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None), "end" : datetime.datetime.strptime(''.join(y["reservation_end_dt"].rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None)} for y in res['times']]
 
 	for x in tranges:
-		if x["start"] < tnow and x["end"] > tnow:
+		if x["start"] < tnow and x["end"] > tnow and x['start'] < (tnow + datetime.timedelta(minutes=30)) and x['end'] > (tnow + datetime.timedelta(minutes=30)):
 			return True
 
 	return False
