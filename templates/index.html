@@ -60,7 +60,7 @@ window.onload = function() {
           text: x.details.space_name,
           font: "bold 12px Arial",
           fill: new ol.style.Fill({color: color}),
-          stroke: new ol.style.Stroke({color: "rgba(255,255,255,0.9)", width: 4}),
+          stroke: x.status == "taken" ? undefined : new ol.style.Stroke({color: "rgba(255,255,255,0.9)", width: 4}),
           offsetX: 0,
           offsetY: -38,
         })
@@ -167,7 +167,9 @@ window.onload = function() {
     
     var oReq = new XMLHttpRequest();
 oReq.addEventListener("load", function(e){
-updateDataLayer(JSON.parse(oReq.responseText));
+var dat = JSON.parse(oReq.responseText);
+    document.querySelector(".status").textContent = dat[0].details.space_name;
+updateDataLayer(dat);
 
     oReq = new XMLHttpRequest();
 oReq.addEventListener("load", function(e){updateDataLayer(JSON.parse(oReq.responseText));});
