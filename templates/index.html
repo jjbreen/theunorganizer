@@ -45,21 +45,50 @@ window.onload = function() {
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         opacity: 0.9,
-        src: '/static/icons/unorganizr_locmarker_red48.png'
+        src: '/static/icons/unorganizr_locmarker_red.png'
+      }))
+    });
+    var icongray = new ol.style.Style({
+      image: new ol.style.Icon( ({
+        anchor: [0.5, 21.0/24.0],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        opacity: 0.9,
+        src: '/static/icons/unorganizr_locmarker_gray.png'
+      }))
+    });
+    var iconblue = new ol.style.Style({
+      image: new ol.style.Icon( ({
+        anchor: [0.5, 21.0/24.0],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        opacity: 0.9,
+        src: '/static/icons/unorganizr_locmarker_blue.png'
+      }))
+    });
+    var icongreen = new ol.style.Style({
+      image: new ol.style.Icon( ({
+        anchor: [0.5, 21.0/24.0],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'fraction',
+        opacity: 0.9,
+        src: '/static/icons/unorganizr_locmarker_green.png'
       }))
     });
         function updateDataLayer(data)
  {
  data.forEach(function(x){
  //details, distance, coordintes, status
-            vectorSource.addFeature(new ol.Feature({
+ var pf = new ol.Feature({
           geometry: new  ol.geom.Point(x.coordinates),
         name: x.details.space_name,
         status: x.status,
         details: x.details,
         distance: Math.round(x.distance)/3.28 + "ft",
 
-        }));
+        });
+        pf.setStyle(x.status == "best" ? icongreen : iconblue);
+            vectorSource.addFeature(pf);
         
         });
         
