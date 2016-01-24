@@ -173,6 +173,7 @@ updateDataLayer(JSON.parse(oReq.responseText).reverse());
 oReq.addEventListener("load", function(e){
 
 var dat = JSON.parse(oReq.responseText);
+
 var ss = document.querySelector(".status");
     ss.textContent = dat[0].details.space_name;
     if (ss.textContent.length > 11)
@@ -220,7 +221,7 @@ var ss = document.querySelector(".status");
     	updateDataLayer([raw, raw2]);
     });
 
-
+map.getView().setCenter(dat[0].coordinates);
 updateDataLayer(dat.reverse());});
 oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
 oReq.send();
@@ -231,7 +232,9 @@ oReq.send();
     ///api/closest?longitude=-7993727.421701732&latitude=5202259.514564865
     document.querySelector(".status").textContent = "Finding nearest room...";
   };
-  navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)}); // TODO: ensure this follows someone
+  navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)
+  document.querySelector(".status").textContent = "Error finding position";
+  }); // TODO: ensure this follows someone
   imgpreload = [new Image(), new Image(), new Image(), new Image()];
   imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
 	imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
@@ -249,7 +252,7 @@ oReq.send();
 
           <div class="masthead clearfix">
             <div class="inner">
-              <div class="status">Searching for Your Location...</div>
+              <div class="status">Finding for your location...</div>
               <img src="static/icons/unorganizr_logo_light.png" class="masthead-brand logorotate">
               <nav>
                 <img src="static/icons/unorganizr_name_light.png" class="nav masthead-nav" style="height: 3em; margin-top: 5px">
