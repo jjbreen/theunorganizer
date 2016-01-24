@@ -38,17 +38,34 @@ window.onload = function() {
           geometry: new  ol.geom.Point(reproject([3467,1918], -81.60, [69, 4632], [-7993569.0, 5202150.0, -7993495.0, 5202268.0], [4347, 6730])),
         name: '115 TEST ',
         });
-        vectorSource.addFeature(iconFeature);
         
     var iconStyle = new ol.style.Style({
       image: new ol.style.Icon( ({
-        anchor: [0.5, 46],
+        anchor: [0.5, 21.0/24.0],
         anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        opacity: 0.7,
-        src: '/static/icons/unorganizr_locmarker_gray.png'
+        anchorYUnits: 'fraction',
+        opacity: 0.9,
+        src: '/static/icons/unorganizr_locmarker_red48.png'
       }))
     });
+        function updateDataLayer(data)
+ {
+ data.forEach(function(x){
+ //details, distance, coordintes, status
+            vectorSource.addFeature(new ol.Feature({
+          geometry: new  ol.geom.Point(x.coordinates),
+        name: x.details.space_name,
+        status: x.status,
+        details: x.details,
+        distance: Math.round(x.distance)/3.28 + "ft",
+
+        }));
+        
+        });
+        
+}
+        vectorSource.addFeature(iconFeature);
+        
 
 
       var positionFeature = new ol.Feature();
@@ -141,6 +158,12 @@ window.onload = function() {
     var lattl = ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude])
     positionFeature.setGeometry(lattl ? new ol.geom.Point(lattl) : null)
     map.getView().setCenter(lattl); // TODO: only on first acquire
+    
+    var oReq = new XMLHttpRequest();
+oReq.addEventListener("load", function(e){updateDataLayer(JSON.parse(oReq.responseText));});
+oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
+oReq.send();
+    ///api/closest?longitude=-7993727.421701732&latitude=5202259.514564865
     document.querySelector(".status").textContent = "Finding nearest room...";
   };
   navigator.geolocation.getCurrentPosition(geoSuccess, function(e){console.error(e)}); // TODO: ensure this follows someone
