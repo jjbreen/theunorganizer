@@ -34,72 +34,6 @@ window.onload = function() {
         var vectorSource = new ol.source.Vector({
       //create empty vector
     });
-   /*  var iconFeature = new ol.Feature({
-          geometry: new  ol.geom.Point(reproject([3467,1918], -81.60, [69, 4632], [-7993569.0, 5202150.0, -7993495.0, 5202268.0], [4347, 6730])),
-        name: '115 TEST ',
-        });*/
-        
-        
-    var iconStyle = new ol.style.Style({
-      image: new ol.style.Icon( {
-        anchor: [0.5, 21.0/24.0],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        opacity: 0.9,
-        src: '/static/icons/unorganizr_locmarker_red.png'
-      }),
-      text: new ol.style.Text({
-          text: "${name}",
-          fill: new ol.style.Fill({color: "red"}),
-          offsetX: 0,
-          offsetY: -40,
-        })
-    });
-    var icongray = new ol.style.Style({
-      image: new ol.style.Icon( {
-        anchor: [0.5, 21.0/24.0],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        opacity: 0.9,
-        src: '/static/icons/unorganizr_locmarker_gray.png'
-      }),
-      text: new ol.style.Text({
-          text: "${name}",
-          fill: new ol.style.Fill({color: "gray"}),
-          offsetX: 0,
-          offsetY: -40,
-        })
-    });
-    var iconblue = new ol.style.Style({
-      image: new ol.style.Icon( {
-        anchor: [0.5, 21.0/24.0],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        opacity: 0.9,
-        src: '/static/icons/unorganizr_locmarker_blue.png'
-      }),
-      text: new ol.style.Text({
-          text: "${name}",
-          fill: new ol.style.Fill({color: "#1260ae"}),
-          offsetX: 0,
-          offsetY: -40,
-        })
-    });
-    var icongreen = new ol.style.Style({
-      image: new ol.style.Icon( {
-        anchor: [0.5, 21.0/24.0],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'fraction',
-        opacity: 0.9,
-        src: '/static/icons/unorganizr_locmarker_green.png'
-      }),
-      text: new ol.style.Text({
-          text: "${name}",
-          fill: new ol.style.Fill({color: "#39b54a"}),
-          offsetX: 0,
-          offsetY: -40,
-        })
-    });
         function updateDataLayer(data)
  {
  data.forEach(function(x){
@@ -112,7 +46,26 @@ window.onload = function() {
         distance: Math.round(x.distance)/3.28 + "ft",
 
         });
-        pf.setStyle(x.status == "best" ? icongreen : iconblue);
+        var png = x.status == "best" ? "green" : (x.status == "free" ? "blue" : "gray");
+        var color = x.status == "best" ? "#29953a" : (x.status == "free" ? "#1260ae" : "gray");
+        pf.setStyle(new ol.style.Style({
+		  image: new ol.style.Icon( {
+		    anchor: [0.5, 21.0/24.0],
+		    anchorXUnits: 'fraction',
+		    anchorYUnits: 'fraction',
+		    opacity: 0.9,
+		    src: '/static/icons/unorganizr_locmarker_'+png+'.png'
+		  }),
+      	text: new ol.style.Text({
+          text: x.details.space_name,
+          font: "bold 12px Arial",
+          fill: new ol.style.Fill({color: color}),
+          stroke: new ol.style.Stroke({color: "rgba(255,255,255,0.9)", width: 4}),
+          offsetX: 0,
+          offsetY: -38,
+        })
+      }));
+        
             vectorSource.addFeature(pf);
         
         });
@@ -143,7 +96,6 @@ window.onload = function() {
 
  var vectorLayer = new ol.layer.Vector({
       source: vectorSource,
-      style: iconStyle
     });
     
   map = new ol.Map({
@@ -214,7 +166,15 @@ window.onload = function() {
     map.getView().setCenter(lattl); // TODO: only on first acquire
     
     var oReq = new XMLHttpRequest();
+oReq.addEventListener("load", function(e){
+updateDataLayer(JSON.parse(oReq.responseText));
+
+    oReq = new XMLHttpRequest();
 oReq.addEventListener("load", function(e){updateDataLayer(JSON.parse(oReq.responseText));});
+oReq.open("GET", "/api/closed?longitude="+lattl[0] + "&latitude=" + lattl[1]);
+oReq.send();
+
+});
 oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
 oReq.send();
     ///api/closest?longitude=-7993727.421701732&latitude=5202259.514564865
