@@ -175,7 +175,7 @@ oReq.addEventListener("load", function(e){
 var dat = JSON.parse(oReq.responseText);
 var ss = document.querySelector(".status");
     ss.textContent = dat[0].details.space_name;
-    ss.innerHTML += " (<a href=\"#\" id=\"taken\">taken?</a>)";
+    ss.innerHTML += " (<a href=\"#\" id=\"taken\">no?</a>)";
     document.getElementById("taken").addEventListener("click", function(e){
     	e.stopPropagation();
     	e.preventDefault();
