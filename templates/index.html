@@ -31,7 +31,7 @@ point = [point[0] * Math.cos(rotate) + point[1] * Math.sin(rotate), -point[0] * 
 window.onload = function() {
   var startPos;
   
-        var vectorSource = new ol.source.Vector({
+        vectorSource = new ol.source.Vector({
       //create empty vector
     });
         function updateDataLayer(data)
@@ -42,12 +42,12 @@ window.onload = function() {
           geometry: new  ol.geom.Point(x.coordinates),
         name: x.details.space_name,
         status: x.status,
-        details: x.details,
+        raw: x,
         distance: Math.round(x.distance)/3.28 + "ft",
 
         });
-        var png = x.status == "best" ? "green" : (x.status == "free" ? "blue" : "gray");
-        var color = x.status == "best" ? "#29953a" : (x.status == "free" ? "#1260ae" : "gray");
+        var png = x.status == "best" ? "green" : (x.status == "free" ? "blue" : (x.status == "bad" ? "red" : "gray"));
+        var color = x.status == "best" ? "#29953a" : (x.status == "free" ? "#1260ae" : (x.status == "bad" ? "red" : "gray"));
         pf.setStyle(new ol.style.Style({
 		  image: new ol.style.Icon( {
 		    anchor: [0.5, 21.0/24.0],
@@ -167,17 +167,56 @@ window.onload = function() {
     
     var oReq = new XMLHttpRequest();
 oReq.addEventListener("load", function(e){
-var dat = JSON.parse(oReq.responseText);
-    document.querySelector(".status").textContent = dat[0].details.space_name;
-updateDataLayer(dat);
+updateDataLayer(JSON.parse(oReq.responseText).reverse());
 
     oReq = new XMLHttpRequest();
-oReq.addEventListener("load", function(e){updateDataLayer(JSON.parse(oReq.responseText));});
-oReq.open("GET", "/api/closed?longitude="+lattl[0] + "&latitude=" + lattl[1]);
+oReq.addEventListener("load", function(e){
+
+var dat = JSON.parse(oReq.responseText);
+var ss = document.querySelector(".status");
+    ss.textContent = dat[0].details.space_name;
+    ss.innerHTML += " (<a href=\"#\" id=\"taken\">taken?</a>)";
+    document.getElementById("taken").addEventListener("click", function(e){
+    	e.stopPropagation();
+    	e.preventDefault();
+    	// TODO: assumes best is last
+    	var shifty = vectorSource.getFeatures();
+    	var newr = shifty.reduce(function(best2, y){
+	    	var best = best2?best2.get("raw"):best2;
+	    	var x = y.get("raw");
+    		if (x && x.status == "free" && (!best || best.distance > x.distance))
+    		{
+    			return y;
+    		}
+    		return best2;
+    	}, null);
+    	shifty = shifty.find(function(x){
+    		if (x.get("raw") && x.get("raw").status == "best") {
+    			return x;
+    		}
+    	});
+    	raw = shifty.get("raw");
+    	raw.status = "bad";
+    	raw2 = newr.get("raw");
+    	if (raw2.status == "free")
+    	{
+    		ss.firstChild.textContent = raw2.details.space_name + " (";
+	    	raw2.status = "best";
+	    	
+	    	map.getView().setCenter(raw2.coordinates);
+    	}
+    	vectorSource.removeFeature(shifty);
+    	vectorSource.removeFeature(newr);
+    	updateDataLayer([raw, raw2]);
+    });
+
+
+updateDataLayer(dat.reverse());});
+oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
 oReq.send();
 
 });
-oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
+oReq.open("GET", "/api/closed?longitude="+lattl[0] + "&latitude=" + lattl[1]);
 oReq.send();
     ///api/closest?longitude=-7993727.421701732&latitude=5202259.514564865
     document.querySelector(".status").textContent = "Finding nearest room...";
