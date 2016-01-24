@@ -101,12 +101,14 @@ def queryTimes(space_id):
 
 	current_date = datetime.date.today()
 	dt = "%04d%02d%02d" % (current_date.year, current_date.month, current_date.day)
-	start_dt = "%s000000" % (dt)
-	end_dt = "%s235959" % (dt)
+	start_dt = "%sT000000" % (dt)
+	end_dt = "%sT235959" % (dt)
 	office_hrs = "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23"
 
 	r = requests.get(tpath.format(space_id, start_dt, end_dt, office_hrs))
 	
+	print (tpath.format(space_id, start_dt, end_dt, office_hrs))
+
 	tree = xml.etree.ElementTree.fromstring(r.content)
 
 	reservations = tree.findall("r25:space_reservation", namespace)
@@ -312,7 +314,6 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-
 	app.run(debug = True, host="0.0.0.0")
 
 
