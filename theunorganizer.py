@@ -52,6 +52,7 @@ def closed_api():
 
 	return Response(json.dumps(findTakenRooms([lon, lat])), mimetype='application/json')
 
+@app.route('/api/update')
 @app.route('/api/update/<int:utype>')
 def update_db(utype = 0):
 	if utype == 0:
@@ -205,6 +206,9 @@ def refreshRoomGPSInformation():
 	flushRoomGPSInformation()
 	posts = dbroomtogps.posts
 	results = posts.insert_many(roomdata.fixCoordinates())
+
+	conresults = posts.insert_many(roomdata.conData)
+
 	return results.inserted_ids 
 
 def grabRoomGPSInformationFromDB(searchDict = {}):
