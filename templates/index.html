@@ -34,46 +34,71 @@ window.onload = function() {
         var vectorSource = new ol.source.Vector({
       //create empty vector
     });
-     var iconFeature = new ol.Feature({
+   /*  var iconFeature = new ol.Feature({
           geometry: new  ol.geom.Point(reproject([3467,1918], -81.60, [69, 4632], [-7993569.0, 5202150.0, -7993495.0, 5202268.0], [4347, 6730])),
         name: '115 TEST ',
-        });
+        });*/
+        
         
     var iconStyle = new ol.style.Style({
-      image: new ol.style.Icon( ({
+      image: new ol.style.Icon( {
         anchor: [0.5, 21.0/24.0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         opacity: 0.9,
         src: '/static/icons/unorganizr_locmarker_red.png'
-      }))
+      }),
+      text: new ol.style.Text({
+          text: "${name}",
+          fill: new ol.style.Fill({color: "red"}),
+          offsetX: 0,
+          offsetY: -40,
+        })
     });
     var icongray = new ol.style.Style({
-      image: new ol.style.Icon( ({
+      image: new ol.style.Icon( {
         anchor: [0.5, 21.0/24.0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         opacity: 0.9,
         src: '/static/icons/unorganizr_locmarker_gray.png'
-      }))
+      }),
+      text: new ol.style.Text({
+          text: "${name}",
+          fill: new ol.style.Fill({color: "gray"}),
+          offsetX: 0,
+          offsetY: -40,
+        })
     });
     var iconblue = new ol.style.Style({
-      image: new ol.style.Icon( ({
+      image: new ol.style.Icon( {
         anchor: [0.5, 21.0/24.0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         opacity: 0.9,
         src: '/static/icons/unorganizr_locmarker_blue.png'
-      }))
+      }),
+      text: new ol.style.Text({
+          text: "${name}",
+          fill: new ol.style.Fill({color: "#1260ae"}),
+          offsetX: 0,
+          offsetY: -40,
+        })
     });
     var icongreen = new ol.style.Style({
-      image: new ol.style.Icon( ({
+      image: new ol.style.Icon( {
         anchor: [0.5, 21.0/24.0],
         anchorXUnits: 'fraction',
         anchorYUnits: 'fraction',
         opacity: 0.9,
         src: '/static/icons/unorganizr_locmarker_green.png'
-      }))
+      }),
+      text: new ol.style.Text({
+          text: "${name}",
+          fill: new ol.style.Fill({color: "#39b54a"}),
+          offsetX: 0,
+          offsetY: -40,
+        })
     });
         function updateDataLayer(data)
  {
@@ -93,7 +118,7 @@ window.onload = function() {
         });
         
 }
-        vectorSource.addFeature(iconFeature);
+       // vectorSource.addFeature(iconFeature);
         
 
 
