@@ -52,9 +52,20 @@ def closed_api():
 
 	return Response(json.dumps(findTakenRooms([lon, lat])), mimetype='application/json')
 
-@app.route('/api/update')
-def update_db():
-	updateDB()
+@app.route('/api/update/<int:utype>')
+def update_db(utype = 0):
+	if utype == 0:
+		updateDB()
+	elif utype == 1:
+		refreshSpaceInformation()
+	elif utype == 2:
+		refreshIDTimesInformation()
+	else:
+		refreshRoomGPSInformation()
+
+	return "ok"
+
+
 
 def parseWPILive():
 	tpath = "https://25live.collegenet.com/25live/data/wpi/run/spaces.xml"
