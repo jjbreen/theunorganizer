@@ -1,15 +1,15 @@
 from xml.etree.ElementTree import ElementTree
 import xml
 import requests
-import datetime 
-import time 
+import datetime
+import time
 import roomdata
-import json 
+import json
 
 from flask import Flask
-from flask import request 
+from flask import request
 from flask import render_template
-from flask import Response 
+from flask import Response
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -140,7 +140,7 @@ def isConflict(space_id):
 
 def listTakenRooms():
 	qDict = grabSpaceInformationFromDB()
-	takenRooms = []	
+	takenRooms = []
 	for x in qDict:
 		if isConflict(x["space_id"]) == True:
 			takenRooms.append(x)
@@ -149,7 +149,7 @@ def listTakenRooms():
 
 def listFreeRooms():
 	qDict = grabSpaceInformationFromDB()
-	freeRooms = []	
+	freeRooms = []
 	for x in qDict:
 		if isConflict(x["space_id"]) == False:
 			freeRooms.append(x)
@@ -202,7 +202,7 @@ def grabIDTimesInformationFromDB(searchDict = {}):
 		del x['_id']
 
 
-	return results 
+	return results
 
 def refreshRoomGPSInformation():
 	flushRoomGPSInformation()
@@ -211,7 +211,7 @@ def refreshRoomGPSInformation():
 
 	conresults = posts.insert_many(roomdata.conData)
 
-	return results.inserted_ids 
+	return results.inserted_ids
 
 def grabRoomGPSInformationFromDB(searchDict = {}):
 	posts = dbroomtogps.posts
@@ -221,7 +221,7 @@ def grabRoomGPSInformationFromDB(searchDict = {}):
 	for x in results:
 		del x['_id']
 
-	return results 
+	return results
 
 def updateDB():
 	refreshSpaceInformation();
@@ -314,7 +314,7 @@ def automatchRooms():
 
 
 if __name__ == "__main__":
-	app.run(debug = False, host="0.0.0.0")
+	app.run(debug = True)
 
 
 
