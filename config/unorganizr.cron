@@ -1,0 +1,2 @@
+# m h dom mon dow user  command
+32 10,15    * * *   www-data    wget http://unorganizr.cloudapp.net/api/update/0 -O /dev/null
