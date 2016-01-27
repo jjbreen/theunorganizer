@@ -1,2 +1,0 @@
-# m h dom mon dow user  command
-32 10,15    * * 1-5   www-data    wget http://localhost/api/update/0 -O /dev/null
