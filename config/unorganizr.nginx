@@ -2,7 +2,8 @@ server {
 	listen 80;
 	server_name unorganizr.cloudapp.net;
 	charset utf-8;
-
+	gzip on;
+	gzip_types text/plain application/xml application/json application/x-javascript text/css application/javascript;
 
 	location / {
 		include uwsgi_params;
