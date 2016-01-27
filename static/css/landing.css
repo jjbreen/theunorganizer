@@ -129,6 +129,6 @@
 }
 
 body {
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.4) 30%, rgba(0,0,0,0.4)), url("/static/images/WPI Aerial.png");
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.4) 30%, rgba(0,0,0,0.4)), url("/static/images/WPI Aerial.jpg");
 background-position: center center;
 }
