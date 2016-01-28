@@ -23,11 +23,11 @@ dbroomtogps = client.db_roomgps
 
 @app.route("/")
 def hello():
-    return render_template("landingpage.html")
+    return render_template("index.html")
 
 @app.route("/location")
 def getlocation():
-    return render_template("index.html")
+    return render_template("location.html")
 
 @app.route("/wpilive")
 def getwpilib():
