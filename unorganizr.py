@@ -29,14 +29,6 @@ def hello():
 def getlocation():
     return render_template("location.html")
 
-@app.route("/wpilive")
-def getwpilib():
-    return parseWPILive()
-
-@app.route('/public/<path:path>')
-def send_js(path):
-    return send_from_directory('public', path)
-
 @app.route('/api/closest', methods=['GET'])
 def map_api():
 
@@ -310,14 +302,8 @@ def automatchRooms():
 			print( "\t\t\t\t\t\t\t\t" + rm["space_name"] + " - " + rm["space_id"])
 			pass
 
-	print( tmpdata)
-
+	print(tmpdata)
 
 if __name__ == "__main__":
 	app.run(debug = True)
 
-
-
-
-
-    
