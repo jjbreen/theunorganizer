@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>unorganizr - the situation page</title>
+    <link rel="icon" href="/static/icons/unorganizr_icon.png">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/shared.css" rel="stylesheet">
+    <link href="/static/css/location.css" rel="stylesheet">
+    <script src="/static/js/ol-v3.13.0.js"></script>
+    <script>
+window.onload = function() {
+var startPos;
+vectorSource = new ol.source.Vector({});
+function updateDataLayer(data)
+{
+	data.forEach(function(x)
+	{
+		//details, distance, coordintes, status
+		var pf = new ol.Feature({
+			geometry: new ol.geom.Point(x.coordinates),
+			name: x.details.space_name,
+			status: x.status,
+			raw: x,
+			distance: Math.round(x.distance) / 3.28 + "ft",
+		});
+		var png = x.status == "best" ? "green" : (x.status == "free" ? "blue" : (x.status == "bad" ? "red" : "gray"));
+		var color = x.status == "best" ? "#29953a" : (x.status == "free" ? "#1260ae" : (x.status == "bad" ? "red" : "#96989c"));
+		pf.setStyle(new ol.style.Style({
+			image: new ol.style.Icon({
+				anchor: [0.5, 21.0 / 24.0],
+				anchorXUnits: 'fraction',
+				anchorYUnits: 'fraction',
+				opacity: 0.9,
+				src: '/static/icons/unorganizr_locmarker_' + png + '.png'
+			}),
+			text: new ol.style.Text({
+				text: x.details.space_name,
+				font: "bold 12px Arial",
+				fill: new ol.style.Fill({
+					color: color
+				}),
+				stroke: x.status == "taken" || x.status == "bad" ? undefined : new ol.style.Stroke({
+					color: "rgba(255,255,255,0.9)",
+					width: 4
+				}),
+				offsetX: 0,
+				offsetY: -38,
+			})
+		}));
+		vectorSource.addFeature(pf);
+	});
+}
+
+var positionFeature = new ol.Feature();
+positionFeature.setStyle(new ol.style.Style({
+	image: new ol.style.Circle({
+		radius: 6,
+		fill: new ol.style.Fill({
+			color: '#39b54a'
+		}),
+		stroke: new ol.style.Stroke({
+			color: '#fff',
+			width: 2
+		})
+	})
+}));
+
+vectorSource.addFeature(positionFeature);
+
+var vectorLayer = new ol.layer.Vector({
+	source: vectorSource,
+});
+
+map = new ol.Map({
+	layers: [new ol.layer.Tile({
+		visible: true,
+		preload: Infinity,
+		source: new ol.source.BingMaps({
+				key: 'AgLSPXtDo72XlOb6hkEc5D-4ICLMCgJ0AM2nLSyjpEcYf3fg4-GeJkQbhGP8H6db',
+				imagerySet: 'aerial',
+				maxZoom: 19
+			})
+		}), 
+		vectorLayer
+	],
+	// Improve user experience by loading tiles while dragging/zooming. Will make
+	// zooming choppy on mobile or slow devices.
+	loadTilesWhileInteracting: true,
+	target: 'mapDiv',
+	view: new ol.View({
+		center: ol.proj.fromLonLat([-71.807402, 42.274775]),
+		zoom: 19,
+	}),
+});
+
+var geoSuccess = function(position)
+{
+	startPos = position;
+	console.info(position);
+	var lattl = ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude])
+	positionFeature.setGeometry(lattl ? new ol.geom.Point(lattl) : null)
+	map.getView().setCenter(lattl); // TODO: only on first acquire
+
+	var oReq = new XMLHttpRequest();
+	oReq.addEventListener("load", function(e)
+	{
+		updateDataLayer(JSON.parse(oReq.responseText).reverse());
+		oReq = new XMLHttpRequest();
+		oReq.addEventListener("load", function(e)
+		{
+
+			var dat = JSON.parse(oReq.responseText);
+			var ss = document.querySelector(".status");
+			ss.textContent = dat[0].details.space_name;
+				if (ss.textContent.length > 11)
+				{
+					ss.textContent = ss.textContent.substring(0,10) + "…";
+				}
+				ss.innerHTML += " (<a href=\"#\" id=\"taken\">no?</a>)";
+				document.getElementById("taken").addEventListener("click", function(e)
+				{
+					e.stopPropagation();
+					e.preventDefault();
+					var shifty = vectorSource.getFeatures();
+					var newr = shifty.reduce(function(best2, y)
+					{
+						var best = best2 ? best2.get("raw") : best2;
+						var x = y.get("raw");
+						if (x && x.status == "free" && (!best || best.distance > x.distance))
+							return y;
+						return best2;
+					}, null);
+					shifty = shifty.find(function(x)
+					{
+						if (x.get("raw") && x.get("raw").status == "best")
+							return x;
+					});
+					raw = shifty.get("raw");
+					raw.status = "bad";
+					raw2 = newr.get("raw");
+					if (raw2.status == "free")
+					{
+						ss.firstChild.textContent = raw2.details.space_name;
+						if (ss.firstChild.textContent.length > 11)
+						{
+							ss.firstChild.textContent = ss.firstChild.textContent.substring(0,10) + "…";
+						}
+						ss.firstChild.textContent += " (";
+						raw2.status = "best";
+						map.getView().setCenter(raw2.coordinates);
+					}
+					vectorSource.removeFeature(shifty);
+					vectorSource.removeFeature(newr);
+					updateDataLayer([raw, raw2]);
+				});
+				map.getView().setCenter(dat[0].coordinates);
+				updateDataLayer(dat.reverse());
+			});
+			oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
+			oReq.send();
+		});
+		oReq.open("GET", "/api/closed?longitude="+lattl[0] + "&latitude=" + lattl[1]);
+		oReq.send();
+		document.querySelector(".status").textContent = "Finding rooms...";
+	};
+	navigator.geolocation.getCurrentPosition(geoSuccess, function(e)
+	{
+		console.error(e)
+		document.querySelector(".status").textContent = "GPS Error";
+	}); // TODO: ensure this follows someone
+	imgpreload = [new Image(), new Image(), new Image(), new Image()];
+	imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
+	imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
+	imgpreload[2].src = "/static/icons/unorganizr_locmarker_blue.png";
+	imgpreload[3].src = "/static/icons/unorganizr_locmarker_gray.png";
+};
+    </script>
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <div class="status">Locating you...</div>
+              <a href="/" title="Go home"><img src="static/icons/unorganizr_logo_light.png" class="masthead-brand logorotate"></a>
+              <nav>
+                <img src="static/icons/unorganizr_name_light.png" class="nav masthead-nav" style="height: 3em; margin-top: 5px;margin-right: 5px;">
+              </nav>
+            </div>
+          </div>
+          <div class="inner cover" id='mapDiv'></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

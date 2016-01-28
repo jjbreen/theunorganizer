@@ -1,0 +1,134 @@
+
+
+/* Extra markup and styles for table-esque vertical and horizontal centering */
+.site-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+  -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+          box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+}
+.site-wrapper-inner {
+  display: table-cell;
+  vertical-align: top;
+}
+.cover-container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Padding for spacing */
+.inner {
+  padding: 30px;
+}
+
+
+/*
+ * Cover
+ */
+
+.cover {
+  padding: 0 20px;
+}
+.cover .btn-lg {
+  padding: 20px 30px;
+  font-weight: bold;
+}
+
+
+/*
+ * Footer
+ */
+
+.mastfoot {
+  color: #999; /* IE8 proofing */
+  color: rgba(255,255,255,.5);
+}
+
+
+/*
+ * Affix and center
+ */
+
+@media (min-width: 768px) {
+  /* Pull out the header and footer */
+  .masthead {
+    position: fixed;
+    top: 0;
+  }
+  .mastfoot {
+    position: fixed;
+    bottom: 0;
+  }
+  /* Start the vertical centering */
+  .site-wrapper-inner {
+    vertical-align: middle;
+  }
+  /* Handle the widths */
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 100%; /* Must be percentage or pixels for horizontal alignment */
+  }
+}
+
+@media (min-width: 992px) {
+  .masthead,
+  .mastfoot,
+  .cover-container {
+    width: 700px;
+  }
+}
+
+/*
+ * Custom
+ */
+
+
+
+.maydaybutton {
+  -webkit-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  -moz-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  -o-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  -ms-transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+  transition: background-color 0.5s, color 0.5s, font-size 0.5s, padding 0.5s ease;
+}
+
+.maydaybutton:hover {
+  background-color: #CD2626;
+  color: #FFF;
+  font-size: 30pt;
+  padding: 40px 60px;
+  animation: pulse 1s infinite;
+  animation-delay: 0.5s;
+  box-shadow: 3px 3px 3px 2px black;
+}
+
+.maydaybutton:active {
+  animation: none;
+  color: #FFB00F !important;
+  background-color: #EE2C2C !important;
+  border-color: #FFF !important;
+  font-size: 40pt;
+  padding: 32px 31px;
+  -webkit-transition: color 0.1s ease;
+  -moz-transition: color 0.1s ease;
+  -o-transition: color 0.1s ease;
+  -ms-transition: color 0.1s ease;
+  transition: color 0.1s ease;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #CD2626;
+  }
+  100% {
+    background-color: #EE2C2C;
+  }
+}
+
+body {
+  background-image: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.4) 30%, rgba(0,0,0,0.4)), url("/static/images/WPI Aerial.jpg");
+background-position: center center;
+}
