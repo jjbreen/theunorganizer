@@ -67,7 +67,7 @@ body {
 	background-color: rgb(0, 136, 60);
 }
 .gps-find > button.lost {
-	background-color: rgb(136, 0, 60);
+	background-color: rgb(136, 0, 0);
 }
 .ol-touch .gps-find {
 /*	top: 80px;*/

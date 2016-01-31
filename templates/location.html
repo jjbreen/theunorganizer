@@ -11,8 +11,21 @@
     <link href="/static/css/location.css" rel="stylesheet">
     <script src="/static/js/ol-v3.13.0.js"></script>
     <script>
+// polyfills
+Math.hypot = Math.hypot || function() {
+  var y = 0;
+  var length = arguments.length;
+
+  for (var i = 0; i < length; i++) {
+    if (arguments[i] === Infinity || arguments[i] === -Infinity) {
+      return Infinity;
+    }
+    y += arguments[i] * arguments[i];
+  }
+  return Math.sqrt(y);
+};
+    
 window.onload = function() {
-var startPos;
 grayLayer = new ol.source.Vector({});
 redLayer = new ol.source.Vector({});
 blueLayer = new ol.source.Vector({});
@@ -161,8 +174,8 @@ map = new ol.Map({
 		new ol.layer.Vector({ source: positionLayer, }),
 	],
 	// Improve user experience by loading tiles while dragging/zooming. Will make
-	// zooming choppy on mobile or slow devices.
-	loadTilesWhileInteracting: true,
+	// zooming choppy on mobile or slow devices, hence the media query
+	loadTilesWhileInteracting: matchMedia("only screen and (min-width: 1024px)").matches,
 	target: 'mapDiv',
 	view: new ol.View({
 		center: ol.proj.fromLonLat([-71.807402, 42.274775]),
@@ -170,89 +183,127 @@ map = new ol.Map({
 	}),
 });
 
-var geoSuccess = function(position)
+// used to find the next nearest open room
+function pickNext(e)
 {
-	startPos = position;
-	console.info(position);
-	var lattl = ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude])
+	e.stopPropagation();
+	e.preventDefault();
+	
+	// find the nearest open room
+	var newr = blueLayer.getFeatures().reduce(function(best2, y)
+	{
+		var best = best2 ? best2.get("raw") : best2;
+		var x = y.get("raw");
+		if (x && x.status == "free" && (!best || best.distance > x.distance))
+			return y;
+		return best2;
+	}, null);
+	
+	// find the only good point, should be just one
+	shifty = greenLayer.getFeatures().find(function(x)
+	{
+		if (x.get("raw") && x.get("raw").status == "best")
+			return x;
+	});
+	
+	// swap point information
+	raw = shifty.get("raw");
+	raw.status = "bad";
+	raw2 = newr.get("raw");
+	
+	// if a room is available
+	if (raw2.status == "free")
+	{
+		// then update the status bar and re-center the view
+		updateBest(raw2);
+		raw2.status = "best";
+	}
+	
+	// re-layer the new points
+	greenLayer.removeFeature(shifty);
+	blueLayer.removeFeature(newr);
+	updateDataLayer([raw, raw2]);
+}
+
+// update the status bar and re-center the view
+function updateBest(best)
+{
+	// assign truncated room name to the statusbar
+	var ss = document.querySelector(".status");
+	if (best.details.space_name.length > 11)
+		ss.textContent = best.details.space_name.substring(0,10) + "…";
+	else
+		ss.textContent = best.details.space_name;
+	
+	// add back a callback to ourselves
+	ss.innerHTML += " (<a href=\"#\" id=\"taken\">no?</a>)";
+	document.getElementById("taken").addEventListener("click", pickNext);
+	
+	// center on best
+	map.getView().setCenter(best.coordinates);
+}
+
+// xhr callback generator to update the layers and best room
+function jsonCallback(oReq, closest)
+{
+	return function(e)
+	{
+		var dat = JSON.parse(oReq.responseText);
+		if (closest)
+			updateBest(dat[0]);
+		updateDataLayer(dat.reverse());
+	}
+}
+
+var lastPos = null;
+function geoSuccess(startPos)
+{	
+	var lattl = ol.proj.fromLonLat([startPos.coords.longitude, startPos.coords.latitude]);
+	
+	// only recalculate when we move too much
+	if (lastPos != null && Math.hypot(lattl[0] - lastPos[0], lattl[1] - lastPos[1]) < 30)
+		return;
+		
+	lastPos = lattl;
 	positionFeature.setGeometry(lattl ? new ol.geom.Point(lattl) : null)
-	map.getView().setCenter(lattl); // TODO: only on first acquire
 
 	var oReq = new XMLHttpRequest();
-	oReq.addEventListener("load", function(e)
-	{
-		updateDataLayer(JSON.parse(oReq.responseText).reverse());
-		oReq = new XMLHttpRequest();
-		oReq.addEventListener("load", function(e)
-		{
-
-			var dat = JSON.parse(oReq.responseText);
-			var ss = document.querySelector(".status");
-			ss.textContent = dat[0].details.space_name;
-				if (ss.textContent.length > 11)
-				{
-					ss.textContent = ss.textContent.substring(0,10) + "…";
-				}
-				ss.innerHTML += " (<a href=\"#\" id=\"taken\">no?</a>)";
-				document.getElementById("taken").addEventListener("click", function(e)
-				{
-					e.stopPropagation();
-					e.preventDefault();
-					var shifty = blueLayer.getFeatures();
-					var newr = shifty.reduce(function(best2, y)
-					{
-						var best = best2 ? best2.get("raw") : best2;
-						var x = y.get("raw");
-						if (x && x.status == "free" && (!best || best.distance > x.distance))
-							return y;
-						return best2;
-					}, null);
-					shifty = greenLayer.getFeatures();
-					shifty = shifty.find(function(x)
-					{
-						if (x.get("raw") && x.get("raw").status == "best")
-							return x;
-					});
-					raw = shifty.get("raw");
-					raw.status = "bad";
-					raw2 = newr.get("raw");
-					if (raw2.status == "free")
-					{
-						ss.firstChild.textContent = raw2.details.space_name;
-						if (ss.firstChild.textContent.length > 11)
-						{
-							ss.firstChild.textContent = ss.firstChild.textContent.substring(0,10) + "…";
-						}
-						ss.firstChild.textContent += " (";
-						raw2.status = "best";
-						map.getView().setCenter(raw2.coordinates);
-					}
-					greenLayer.removeFeature(shifty);
-					blueLayer.removeFeature(newr);
-					updateDataLayer([raw, raw2]);
-				});
-				map.getView().setCenter(dat[0].coordinates);
-				updateDataLayer(dat.reverse());
-			});
-			oReq.open("GET", "/api/closest?longitude="+lattl[0] + "&latitude=" + lattl[1]);
-			oReq.send();
-		});
-		oReq.open("GET", "/api/closed?longitude="+lattl[0] + "&latitude=" + lattl[1]);
-		oReq.send();
-		document.querySelector(".status").textContent = "Finding rooms...";
-	};
-	navigator.geolocation.getCurrentPosition(geoSuccess, function(e)
-	{
-		console.error(e)
-		document.querySelector(".status").textContent = "GPS Error";
-	}); // TODO: ensure this follows someone
+	oReq.addEventListener("load", jsonCallback(oReq, false));
+	oReq.open("GET", "/api/closed?longitude=" + lattl[0] + "&latitude=" + lattl[1]);
+	oReq.send();
+	var reqNear = new XMLHttpRequest();
+	reqNear.addEventListener("load", jsonCallback(reqNear, true));
+	reqNear.open("GET", "/api/closest?longitude=" + lattl[0] + "&latitude=" + lattl[1]);
+	reqNear.send();
 	
-	imgpreload = [new Image(), new Image(), new Image(), new Image()];
-	imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
-	imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
-	imgpreload[2].src = "/static/icons/unorganizr_locmarker_blue.png";
-	imgpreload[3].src = "/static/icons/unorganizr_locmarker_gray.png";
+	document.querySelector(".status").textContent = "Finding rooms...";
+	document.querySelector(".gps-find > button").className = "tracking";
+}
+
+function geoError(err)
+{
+	console.info(err);
+	lastPos = null;
+	document.querySelector(".gps-find > button").className = "lost";
+	if (err.code == 1)
+		document.querySelector(".status").textContent = "Access denied";
+	else if (err.code == 2)
+		document.querySelector(".status").textContent = "GPS unavailable";
+	else
+		document.querySelector(".status").textContent = "GPS error";
+}
+
+// on page load, get current location
+watchPosID = navigator.geolocation.watchPosition(geoSuccess, geoError, {maximumAge: 30 * 1000, timeout: 60*1000});
+//navigator.geolocation.clearWatch(watchID);
 };
+
+// preload all the markers
+imgpreload = [new Image(), new Image(), new Image(), new Image()];
+imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
+imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
+imgpreload[2].src = "/static/icons/unorganizr_locmarker_blue.png";
+imgpreload[3].src = "/static/icons/unorganizr_locmarker_gray.png";
     </script>
   </head>
   <body>
