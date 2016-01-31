@@ -31,16 +31,16 @@ def getlocation():
 
 @app.route('/api/closest', methods=['GET'])
 def map_api():
-
-	lon = float(request.args.get('longitude'))
-	lat = float(request.args.get('latitude'))
+	
+	lon = float(request.args.get('longitude')) if request.args.get('longitude') else 0.0
+	lat = float(request.args.get('latitude')) if request.args.get('latitude') else 0.0
 
 	return Response(json.dumps(findNearbyRooms([lon, lat])), mimetype='application/json')
 
 @app.route('/api/closed', methods=['GET'])
 def closed_api():
-	lon = float(request.args.get('longitude'))
-	lat = float(request.args.get('latitude'))
+	lon = float(request.args.get('longitude')) if request.args.get('longitude') else 0.0
+	lat = float(request.args.get('latitude')) if request.args.get('latitude') else 0.0
 
 	return Response(json.dumps(findTakenRooms([lon, lat])), mimetype='application/json')
 
@@ -99,7 +99,7 @@ def queryTimes(space_id):
 
 	r = requests.get(tpath.format(space_id, start_dt, end_dt, office_hrs))
 	
-	print (tpath.format(space_id, start_dt, end_dt, office_hrs))
+	#print (tpath.format(space_id, start_dt, end_dt, office_hrs))
 
 	tree = xml.etree.ElementTree.fromstring(r.content)
 
@@ -113,7 +113,7 @@ def queryTimes(space_id):
 def isConflict(space_id):
 	res = grabIDTimesInformationFromDB({'space_id' : space_id})[0]
 	
-	print(res)
+	#print(res)
 
 	if len(res['times']) <= 0:
 		return False
@@ -246,7 +246,8 @@ def findNearbyRooms(GPS_coordinates):
 							'status': 'free'})
 
 	avail = sorted(avail, key=lambda x: x['distance'])
-	avail[0]['status'] = 'best'
+	if not (lon == 0.0 and lat == 0.0):
+		avail[0]['status'] = 'best'
 	return avail
 
 def findTakenRooms(GPS_coordinates):
@@ -277,7 +278,7 @@ def transformRoomtoID(nameTuple):
 		if room['gps'] == nameTuple:
 			return room['live25'][1]
 
-
+# manually called, will attempt to match room ID's together and prints out alist of those that it can and can't match
 def automatchRooms():
 	import re
 	alldata = grabSpaceInformationFromDB()

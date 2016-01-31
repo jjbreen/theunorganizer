@@ -227,15 +227,28 @@ function updateBest(best)
 }
 
 // xhr callback generator to update the layers and best room
-function jsonCallback(oReq, closest)
+function jsonCallback(oReq, closest, isNull)
 {
 	return function(e)
 	{
 		var dat = JSON.parse(oReq.responseText);
-		if (closest)
+		if (closest && !isNull)
 			updateBest(dat[0]);
 		updateDataLayer(dat.reverse());
 	}
+}
+
+function doRequests(lastPos)
+{
+	var url = lastPos ? "?longitude=" + lastPos[0] + "&latitude=" + lastPos[1] : "";
+	var oReq = new XMLHttpRequest();
+	oReq.addEventListener("load", jsonCallback(oReq, false));
+	oReq.open("GET", "/api/closed" + url);
+	oReq.send();
+	var reqNear = new XMLHttpRequest();
+	reqNear.addEventListener("load", jsonCallback(reqNear, true, lastPos == null));
+	reqNear.open("GET", "/api/closest" + url);
+	reqNear.send();
 }
 
 // Attempts to launch the location service
@@ -258,14 +271,7 @@ function geoSuccess(startPos)
 	positionFeature.setGeometry(lattl ? new ol.geom.Point(lattl) : null);
 
 	// request the open rooms
-	var oReq = new XMLHttpRequest();
-	oReq.addEventListener("load", jsonCallback(oReq, false));
-	oReq.open("GET", "/api/closed?longitude=" + lattl[0] + "&latitude=" + lattl[1]);
-	oReq.send();
-	var reqNear = new XMLHttpRequest();
-	reqNear.addEventListener("load", jsonCallback(reqNear, true));
-	reqNear.open("GET", "/api/closest?longitude=" + lattl[0] + "&latitude=" + lattl[1]);
-	reqNear.send();
+	doRequests(lastPos);
 	
 	// update status
 	document.querySelector(".status").textContent = "Finding rooms...";
@@ -287,7 +293,8 @@ function geoError(err)
 	console.info(err);
 }
 
-// on page load, get current location
+// on page load, get current location and blank map if that fails
+doRequests(null);
 tryLocation();
 // and stop polling when we leave the page
 window.onbeforeunload = function() {if (watchPosID) navigator.geolocation.clearWatch(watchPosID);}
