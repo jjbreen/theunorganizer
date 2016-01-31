@@ -13,7 +13,12 @@
     <script>
 window.onload = function() {
 var startPos;
-vectorSource = new ol.source.Vector({});
+grayLayer = new ol.source.Vector({});
+redLayer = new ol.source.Vector({});
+blueLayer = new ol.source.Vector({});
+greenLayer = new ol.source.Vector({});
+positionLayer = new ol.source.Vector({});
+var layerMap = { 'gray': grayLayer, 'red': redLayer, 'blue': blueLayer, 'green': greenLayer };
 function updateDataLayer(data)
 {
 	data.forEach(function(x)
@@ -50,7 +55,7 @@ function updateDataLayer(data)
 				offsetY: -38,
 			})
 		}));
-		vectorSource.addFeature(pf);
+		layerMap[png].addFeature(pf);
 	});
 }
 
@@ -68,13 +73,78 @@ positionFeature.setStyle(new ol.style.Style({
 	})
 }));
 
-vectorSource.addFeature(positionFeature);
+positionLayer.addFeature(positionFeature);
 
-var vectorLayer = new ol.layer.Vector({
-	source: vectorSource,
-});
+
+GpsTrackButton = function(opt_options) {
+
+  var options = opt_options || {};
+
+  var button = document.createElement('button');
+  button.innerHTML = '⌖';
+  var element = document.createElement('div');
+
+  var this_ = this;
+  var iState = '';
+  var baseList = 'gps-find ol-unselectable ol-control';
+  var clickBtn = function(e) {
+    switch (iState)
+    {
+    	case '': // just start
+    		element.className = baseList + ' pending';
+    		iState = 'pending';
+    		tryLocation(true);
+    		break;
+/*    	case 
+
+    		
+unction errorHandler(err) {
+if(err.code == 1) {
+alert("Error: Access is denied!");
+}
+
+else if( err.code == 2) {
+alert("Error: Position is unavailable!");
+}
+}
+
+function getLocationUpdate(){
+if(navigator.geolocation){
+// timeout at 60000 milliseconds (60 seconds)
+var options = {timeout:60000};
+geoLoc = navigator.geolocation;
+watchID = geoLoc.watchPosition(showLocation, errorHandler, options);
+}
+
+else{
+alert("Sorry, browser does not support geolocation!");
+}
+}*/
+    }
+  };
+
+  button.addEventListener('click', clickBtn, false);
+  button.addEventListener('touchstart', clickBtn, false);
+
+  element.className = baseList;
+  element.appendChild(button);
+
+  ol.control.Control.call(this, {
+    element: element,
+    target: options.target
+  });
+
+};
+ol.inherits(GpsTrackButton, ol.control.Control);
 
 map = new ol.Map({
+	controls: ol.control.defaults({
+		/*attributionOptions: ({
+			collapsible: false
+		})*/
+	}).extend([
+		new GpsTrackButton()
+	]),
 	layers: [new ol.layer.Tile({
 		visible: true,
 		preload: Infinity,
@@ -84,7 +154,11 @@ map = new ol.Map({
 				maxZoom: 19
 			})
 		}), 
-		vectorLayer
+		new ol.layer.Vector({ source: grayLayer, }),
+		new ol.layer.Vector({ source: redLayer, }),
+		new ol.layer.Vector({ source: blueLayer, }),
+		new ol.layer.Vector({ source: greenLayer, }),
+		new ol.layer.Vector({ source: positionLayer, }),
 	],
 	// Improve user experience by loading tiles while dragging/zooming. Will make
 	// zooming choppy on mobile or slow devices.
@@ -124,7 +198,7 @@ var geoSuccess = function(position)
 				{
 					e.stopPropagation();
 					e.preventDefault();
-					var shifty = vectorSource.getFeatures();
+					var shifty = blueLayer.getFeatures();
 					var newr = shifty.reduce(function(best2, y)
 					{
 						var best = best2 ? best2.get("raw") : best2;
@@ -133,6 +207,7 @@ var geoSuccess = function(position)
 							return y;
 						return best2;
 					}, null);
+					shifty = greenLayer.getFeatures();
 					shifty = shifty.find(function(x)
 					{
 						if (x.get("raw") && x.get("raw").status == "best")
@@ -152,8 +227,8 @@ var geoSuccess = function(position)
 						raw2.status = "best";
 						map.getView().setCenter(raw2.coordinates);
 					}
-					vectorSource.removeFeature(shifty);
-					vectorSource.removeFeature(newr);
+					greenLayer.removeFeature(shifty);
+					blueLayer.removeFeature(newr);
 					updateDataLayer([raw, raw2]);
 				});
 				map.getView().setCenter(dat[0].coordinates);
@@ -171,6 +246,7 @@ var geoSuccess = function(position)
 		console.error(e)
 		document.querySelector(".status").textContent = "GPS Error";
 	}); // TODO: ensure this follows someone
+	
 	imgpreload = [new Image(), new Image(), new Image(), new Image()];
 	imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
 	imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
@@ -186,9 +262,9 @@ var geoSuccess = function(position)
           <div class="masthead clearfix">
             <div class="inner">
               <div class="status">Locating you...</div>
-              <a href="/" title="Go home"><img src="static/icons/unorganizr_logo_light.png" class="masthead-brand logorotate"></a>
+              <a href="/" title="Go home"><img src="/static/icons/unorganizr_logo_light.png" class="masthead-brand logorotate"></a>
               <nav>
-                <img src="static/icons/unorganizr_name_light.png" class="nav masthead-nav" style="height: 3em; margin-top: 5px;margin-right: 5px;">
+                <img src="/static/icons/unorganizr_name_light.png" class="nav masthead-nav" style="height: 3em; margin-top: 5px;margin-right: 5px;">
               </nav>
             </div>
           </div>
