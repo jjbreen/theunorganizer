@@ -47,9 +47,6 @@ head, body, .site-wrapper, .site-wrapper-inner, .cover-container {
 
 body {
 	background-color: #000;
-
-  background-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.9)), url("/static/images/WPI Aerial.jpg");
-  background-size: 100%;
 }
 #taken {
     color: yellow;
