@@ -183,16 +183,12 @@ function pickNext(e)
 	}, null);
 	
 	// find the only good point, should be just one
-	shifty = greenLayer.getFeatures().find(function(x)
-	{
-		if (x.get("raw") && x.get("raw").status == "best")
-			return x;
-	});
+	var shifty = greenLayer.getFeatures()[0];
 	
 	// swap point information
-	raw = shifty.get("raw");
+	var raw = shifty.get("raw");
 	raw.status = "bad";
-	raw2 = newr.get("raw");
+	var raw2 = newr.get("raw");
 	
 	// if a room is available
 	if (raw2.status == "free")
@@ -227,27 +223,30 @@ function updateBest(best)
 }
 
 // xhr callback generator to update the layers and best room
-function jsonCallback(oReq, closest, isNull)
+function jsonCallback(oReq, isNull)
 {
 	return function(e)
 	{
+		// clear out the old map and reset with new data
+		for (var keys in layerMap)
+			layerMap[keys].clear();
 		var dat = JSON.parse(oReq.responseText);
-		if (closest && !isNull)
+		if (!isNull && dat[0].status == "best")
 			updateBest(dat[0]);
 		updateDataLayer(dat.reverse());
+		lastReq = null;
 	}
 }
 
+var lastReq;
 function doRequests(lastPos)
 {
+	if (lastReq != null)
+		lastReq.abort();
 	var url = lastPos ? "?longitude=" + lastPos[0] + "&latitude=" + lastPos[1] : "";
-	var oReq = new XMLHttpRequest();
-	oReq.addEventListener("load", jsonCallback(oReq, false));
-	oReq.open("GET", "/api/closed" + url);
-	oReq.send();
 	var reqNear = new XMLHttpRequest();
-	reqNear.addEventListener("load", jsonCallback(reqNear, true, lastPos == null));
-	reqNear.open("GET", "/api/closest" + url);
+	reqNear.addEventListener("load", jsonCallback(reqNear, lastPos == null));
+	reqNear.open("GET", "/api/rooms" + url);
 	reqNear.send();
 }
 
