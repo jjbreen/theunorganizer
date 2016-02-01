@@ -77,7 +77,7 @@ window.updateDataLayer = function(data)
 				opacity: 0.9,
 				offset: colorDetails[png],
 				size: [48,48],
-				src: '/static/icons/unorganizr_marker.png'
+				src: '/static/icons/unorganizr_marker.svg'
 			}),
 			text: new ol.style.Text({
 				text: x.details.space_name,
@@ -320,7 +320,7 @@ window.onbeforeunload = function() {if (watchPosID) navigator.geolocation.clearW
 
 // preload all the markers
 var imgpreload = [new Image()];
-imgpreload[0].src = "/static/icons/unorganizr_marker.png";
+imgpreload[0].src = "/static/icons/unorganizr_marker.svg";
     </script>
   </head>
   <body>
