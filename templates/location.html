@@ -274,7 +274,7 @@ var watchPosID;
 function tryLocation()
 {
 	document.querySelector(".gps-find > button").className = "pending";
-	watchPosID = navigator.geolocation.watchPosition(geoSuccess, geoError, {maximumAge: 30 * 1000, timeout: 60*1000});
+	watchPosID = navigator.geolocation.watchPosition(geoSuccess, geoError, {maximumAge: 60 * 1000});
 }
 
 var lastPos = null;
@@ -301,7 +301,7 @@ function geoError(err)
 	lastPos = null;
 	document.querySelector(".gps-find > button").className = "lost";
 	if (err.code == 1)
-		document.querySelector(".status").textContent = "Access denied";
+		document.querySelector(".status").textContent = "GPS denied";
 	else if (err.code == 2)
 		document.querySelector(".status").textContent = "GPS unavailable";
 	else
