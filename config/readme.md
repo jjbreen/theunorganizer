@@ -12,4 +12,4 @@ The conf file is the upstart script for launching uwsgi. Copy to /etc/init/
 
 The nginx file is the nginx configuration site. Copy to /etc/nginx/sites-available/ and link to from sites-enabled
 
-
+Once installed, get the url http://localhost/api/update/0 to pull down space information from 25 live
