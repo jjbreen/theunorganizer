@@ -51,10 +51,11 @@ var redLayer = new ol.source.Vector({});
 var blueLayer = new ol.source.Vector({});
 var greenLayer = new ol.source.Vector({});
 var positionLayer = new ol.source.Vector({});
-var layerMap = { 'gray': grayLayer, 'red': redLayer, 'blue': blueLayer, 'green': greenLayer };
+var colorDetails = { gray: [0,48], red: [48,0], green: [48,48], blue: [0,0] };
+window.layerMap = { 'gray': grayLayer, 'red': redLayer, 'blue': blueLayer, 'green': greenLayer };
 
 // Puts each point in the correct layer, styled correctly
-function updateDataLayer(data)
+window.updateDataLayer = function(data)
 {
 	data.forEach(function(x)
 	{
@@ -74,7 +75,9 @@ function updateDataLayer(data)
 				anchorXUnits: 'fraction',
 				anchorYUnits: 'fraction',
 				opacity: 0.9,
-				src: '/static/icons/unorganizr_locmarker_' + png + '.png'
+				offset: colorDetails[png],
+				size: [48,48],
+				src: '/static/icons/unorganizr_marker.png'
 			}),
 			text: new ol.style.Text({
 				text: x.details.space_name,
@@ -316,11 +319,8 @@ window.onbeforeunload = function() {if (watchPosID) navigator.geolocation.clearW
 };
 
 // preload all the markers
-var imgpreload = [new Image(), new Image(), new Image(), new Image()];
-imgpreload[0].src = "/static/icons/unorganizr_locmarker_red.png";
-imgpreload[1].src = "/static/icons/unorganizr_locmarker_green.png";
-imgpreload[2].src = "/static/icons/unorganizr_locmarker_blue.png";
-imgpreload[3].src = "/static/icons/unorganizr_locmarker_gray.png";
+var imgpreload = [new Image()];
+imgpreload[0].src = "/static/icons/unorganizr_marker.png";
     </script>
   </head>
   <body>
