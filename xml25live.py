@@ -36,15 +36,29 @@ def querySpaces():
 	# pull out each space info
 	queryDict = [{y : x.findall("r25:%s" % (y), namespace)[-1].text for y in attrList if len(x.findall("r25:%s" % (y), namespace)) > 0} for x in spaceList]
 
-	"""
+	
 	# Do this later to pull features about each room!
 	urlRInfo = "https://25live.collegenet.com/25live/data/wpi/run/space.xml?space_id=%s"
 	for x in queryDict:
 		r = requests.get(urlRInfo % (x["space_id"]))
+
 		tree = xml.etree.ElementTree.fromstring(r.content)
+
+		tree = tree.findall("r25:space", namespace)[-1]
 		
-		attrList = ["comments", "feature", "hour"]
-	"""
+		commentlist = tree.findall("r25:comments", namespace)[-1].text
+
+		hour_attr = ["day_name", "open", "close"]
+		hourlist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in hour_attr} for z in tree.findall("r25:hours", namespace)]
+
+		blackout_attr = ["blackout_profile_name", "blackout_type_name", "blackout_init_start", "blackout_init_end", "blackout_dates/r25:blackout_start", "blackout_dates/r25:blackout_end"]
+		blackoutlist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in blackout_attr} for z in tree.findall("r25:blackouts", namespace)]
+
+		feature_attr = ["feature_name", "quantity", "feature_defn_state"]
+		featurelist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in feature_attr} for z in tree.findall("r25:feature", namespace)]
+
+		x["room_details"] = {"comments" : commentlist, "hours" : "hourlist", "blackouts" : blackoutlist, "features" : featurelist}
+
 	return queryDict
 
 # Pulls down all the reservations for today for a given space
