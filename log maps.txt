@@ -1,0 +1,21 @@
+//rb
+
+require 'csv'
+require 'json'
+lines = []; CSV.foreach("log.xyz", col_sep: ' ', headers: false){|x| lines << x}
+uas = lines.map{|x|m = x[5].match(/ongitude=(.*)&latitude=(.*) /); [m[1].to_f, m[2].to_f]}
+uas = lines.map{|x|m = x[5].match(/ongitude=(.*)&latitude=(.*) /); {lon: m[1].to_f, lat: m[2].to_f}}
+puts uas.to_json
+
+
+
+// js
+
+for (var keys in layerMap){layerMap[keys].clear()}
+td = [...from ruby export...];
+qq = td.map(x => { return {distance:0, status: 'free', coordinates: [x.lon, x.lat], details: {space_name: 'GPS'}}; })
+updateDataLayer(qq)
+
+
+// sed
+sed < static/logs.txt -n 's/.*ongitude=\(.*\)&latitude=\(.*\) HTTP.*/{distance:0, status: "free", coordinates: [\1,\2], details: {space_name: "GPS"}},/p' > static/logs.js
