@@ -40,10 +40,9 @@ def querySpaces():
 	# Do this later to pull features about each room!
 	urlRInfo = "https://25live.collegenet.com/25live/data/wpi/run/space.xml?space_id=%s"
 	for x in queryDict:
+		print("Pulling room info on " + x["space_name"])
 		r = requests.get(urlRInfo % (x["space_id"]))
-
 		tree = xml.etree.ElementTree.fromstring(r.content)
-
 		tree = tree.findall("r25:space", namespace)[-1]
 		
 		commentlist = tree.findall("r25:comments", namespace)[-1].text
@@ -56,9 +55,9 @@ def querySpaces():
 
 		feature_attr = ["feature_name", "quantity", "feature_defn_state"]
 		featurelist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in feature_attr} for z in tree.findall("r25:feature", namespace)]
+		featuremap = {y["feature_name"].replace(".", "") : y["quantity"] for y in featurelist}
 
-		x["room_details"] = {"comments" : commentlist, "hours" : "hourlist", "blackouts" : blackoutlist, "features" : featurelist}
-
+		x["room_details"] = {"comments" : commentlist, "hours" : hourlist, "blackouts" : blackoutlist, "features" : featuremap}
 	return queryDict
 
 # Pulls down all the reservations for today for a given space
