@@ -1,4 +1,5 @@
 #!/bin/bash
 
 python3 -m compileall *.py
+touch unorganizr.py
 wget http://localhost/api/update/3 -O /dev/null &>/dev/null
