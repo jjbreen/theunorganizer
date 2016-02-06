@@ -47,13 +47,13 @@ def querySpaces():
 		
 		commentlist = tree.findall("r25:comments", namespace)[-1].text
 
-		hour_attr = ["day_name", "open", "close"]
+		hour_attr = ["open", "close"]
 		hourlist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in hour_attr} for z in tree.findall("r25:hours", namespace)]
 
-		blackout_attr = ["blackout_profile_name", "blackout_type_name", "blackout_init_start", "blackout_init_end", "blackout_dates/r25:blackout_start", "blackout_dates/r25:blackout_end"]
+		blackout_attr = ["blackout_profile_name", "blackout_init_start", "blackout_init_end"]
 		blackoutlist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in blackout_attr} for z in tree.findall("r25:blackouts", namespace)]
 
-		feature_attr = ["feature_name", "quantity", "feature_defn_state"]
+		feature_attr = ["feature_name", "quantity"]
 		featurelist = [{y : z.findall("r25:%s" % (y), namespace)[-1].text for y in feature_attr} for z in tree.findall("r25:feature", namespace)]
 		featuremap = {y["feature_name"].replace(".", "") : y["quantity"] for y in featurelist}
 
