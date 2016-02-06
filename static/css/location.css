@@ -1,34 +1,18 @@
 .status {
-position: absolute;
-left: 4em;
-right: 4em;
-height: calc(3em + 10px);
-line-height: 2.8em;
-font-size: 16pt;
+	position: absolute;
+	left: 4em;
+	right: 4em;
+	height: calc(3em + 10px);
+	line-height: 2.8em;
+	font-size: 16pt;
 }
 .logorotate {
-height: 3em; margin: 5px 0 5px 0;
-}
-
-@media (max-width: 767px) {
-	.masthead-brand {
-    float: left;
-  }
-  .masthead-nav {
-    display: none;
-  }
-  .status {
-  left: 3em;
-  text-align: left;
-  line-height: 1.8em;
-  }
-  .logorotate {
-height: 2em;
-}
+	height: 3em; margin: 5px 0 5px 0;
 }
 
 head, body, .site-wrapper, .site-wrapper-inner, .cover-container {
 	height: 100%;
+	overflow: hidden;
 }
 
 .cover-container {
@@ -42,7 +26,6 @@ head, body, .site-wrapper, .site-wrapper-inner, .cover-container {
 #mapDiv {
 	flex: 1 1 auto;
 	max-height: calc(100% - 3em - 10px);
-	
 }
 
 body {
@@ -68,6 +51,83 @@ body {
 }
 .ol-touch .gps-find {
 /*	top: 80px;*/
+}
+
+#info-overlay {
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.7);
+	box-shadow: 0px 0px 10px 3px black;
+	overflow-x: hidden;
+	right: 0px;
+	height: calc(100% - 3em - 10px);
+	width: 300px;
+	top: calc(3em + 10px);
+	text-align: left;
+	transition: transform 0.3s;
+}
+#info-overlay.closed {
+	transform: translateX(310px);
+}
+#info-overlay > header {
+	text-align: center;
+}
+
+#info-overlay > div.row > div.col-xs-7 {
+	text-align: right;
+}
+
+#info-overlay > div.row > div.col-xs-5 {
+	
+	padding-left: 0;
+}
+#info-name {
+	margin-top: 32px;
+}
+
+#close-box {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+
+	display: block;
+	width: 48px;
+	height: 32px;
+	font-weight: bold;
+	line-height: 29px;
+	cursor: pointer;
+}
+#close-box:hover {
+	background-color: black;
+	text-decoration: none;
+}
+
+
+@media (max-width: 767px) {
+	.masthead-brand {
+		float: left;
+	}
+	.masthead-nav {
+		display: none;
+	}
+	.status {
+		left: 3em;
+		text-align: left;
+		line-height: 1.8em;
+	}
+	.logorotate {
+		height: 2em;
+	}
+	#mapDiv {
+		max-height: calc(100% - 2em - 10px);
+	}
+	#info-overlay {
+		height: calc(100% - 2em - 10px);
+		width: 100%;
+		top: calc(2em + 10px)
+	}
+	#info-overlay.closed {
+		transform: translateX(calc(100% + 10px));
+	}
 }
 
 /* http://openlayers.org/en/v3.13.0/css/ol.css */

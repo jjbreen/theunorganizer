@@ -184,6 +184,49 @@ map = new ol.Map({
 		zoom: 19,
 	}),
 });
+map.addEventListener('click', function(evt)
+{
+	var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) { return feature; });
+	if (feature)
+	{
+		var geometry = feature.getGeometry();
+		var coord = geometry.getCoordinates();
+		var raw = feature.get("raw");
+		var feat = raw.details.room_details.features;
+		document.getElementById("info-name").textContent = raw.details.formal_name;
+		document.getElementById("info-comments").textContent = raw.details.room_details.comments;
+		document.getElementById("info-max-cap").textContent = raw.details.max_capacity;
+		document.getElementById("feat-ac").textContent = feat['Air Conditioning']>=1 ? 'Yes' : feat['No Air Conditioning'] ? 'No' : '???';
+		document.getElementById("feat-pc").textContent = Math.max(feat['Computer - Instructor Station']||0, feat['Computer - PC']||0);
+		document.getElementById("feat-seats").textContent = Math.max.apply(Math, ['Seating - Conference','Seating - Fixed','Seating - Moveable','Seating - Tables / Chairs','Seating - Tablet Armchairs','Seating - Theatre'].map(function(x){return feat[x]||0}));
+		document.getElementById("feat-podium").textContent = (feat['Lecturn'] || feat['Podium'] || feat['Sympodium']) ?"Yes" : "No";
+		document.getElementById("feat-projector").textContent = Math.max(feat['Projector - Screen'] || 0,  feat['Projector - Overhead'] || 0, feat['Projector - Data'] || 0, feat['A T C - Laptop Cable Connector'] || 0) || "No";
+		document.getElementById("feat-mic").textContent = feat['A T C - Microphone'] == 1 ? "Yes" : "No";
+		document.getElementById("feat-eth").textContent = feat['I T - Internet Connection'] == 1 ? (feat['I T - Data Connection'] || 'No') : "No";
+		document.getElementById("feat-doccam").textContent = feat['Document Camera'] == 1 ? "Yes" : "No";
+		document.getElementById("feat-capture").textContent = feat['Lecture Capture'] == 1 ? "Yes" : "No";
+		document.getElementById("group-feat-blackboard").style.display = feat['Board - Chalk'] ? "" : "none";
+		document.getElementById("feat-blackboard").textContent = feat['Board - Chalk']||0;
+		document.getElementById("group-feat-whiteboard").style.display = feat['Board - White'] ? "" : "none";
+		document.getElementById("feat-whiteboard").textContent = feat['Board - White']||0;
+		window.ff = feat;
+		document.getElementById("info-overlay").classList.remove("closed");
+	}
+	else
+	{
+		closeInfoBox();
+	}
+});
+
+function closeInfoBox(e)
+{
+	if (e)
+	{
+		e.stopPropagation();
+		e.preventDefault();
+	}
+	document.getElementById("info-overlay").classList.add("closed");
+}
 
 // used to find the next nearest open room
 function pickNext(e)
@@ -316,6 +359,9 @@ doRequests(null);
 tryLocation();
 // and stop polling when we leave the page
 window.onbeforeunload = function() {if (watchPosID) navigator.geolocation.clearWatch(watchPosID);}
+// listen for info close dialog
+document.getElementById("close-box").addEventListener("click", closeInfoBox);
+document.getElementById("close-box").addEventListener("touchend", closeInfoBox);
 };
 
 // preload all the markers
@@ -337,6 +383,61 @@ imgpreload[0].src = "/static/icons/unorganizr_marker.svg";
             </div>
           </div>
           <div class="inner cover" id='mapDiv'></div>
+          <div id="info-overlay" class="container closed">
+          	<header><h3 id="info-name">info-name</h3><a href="#" id="close-box">❯❯</a></header>
+          	<div class="row">
+          		<div class="col-xs-12" id="info-comments">none</div>
+          	</div>
+          	<br />
+          	<div class="row">
+          		<div class="col-xs-7">Capacity:</div>
+          		<div class="col-xs-5" id="info-max-cap">0</div>
+          	</div>
+          	<header><h4>Features</h4></header>
+          	<div class="row">
+          		<div class="col-xs-7">Air Conditioning:</div>
+          		<div class="col-xs-5" id="feat-ac">Yes</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Computers:</div>
+          		<div class="col-xs-5" id="feat-pc">Yes</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Seats:</div>
+          		<div class="col-xs-5" id="feat-seats">Yes</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Podium:</div>
+          		<div class="col-xs-5" id="feat-podium">Yes</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Projector:</div>
+          		<div class="col-xs-5" id="feat-projector">no</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Microphone:</div>
+          		<div class="col-xs-5" id="feat-mic">no</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Ethernet:</div>
+          		<div class="col-xs-5" id="feat-eth">no</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Doc Cam:</div>
+          		<div class="col-xs-5" id="feat-doccam">no</div>
+          	</div>
+          	<div class="row">
+          		<div class="col-xs-7">Lecture Capture:</div>
+          		<div class="col-xs-5" id="feat-capture">no</div>
+          	</div>
+          	<div class="row" id="group-feat-blackboard">
+          		<div class="col-xs-7">Blackboard:</div>
+          		<div class="col-xs-5" id="feat-blackboard">no</div>
+          	</div>
+          	<div class="row" id="group-feat-whiteboard">
+          		<div class="col-xs-7">Whiteboard:</div>
+          		<div class="col-xs-5" id="feat-whiteboard">no</div>
+          	</div>
           </div>
         </div>
       </div>
